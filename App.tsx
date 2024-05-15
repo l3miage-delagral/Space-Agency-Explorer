@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Accueil from './src/screens/Accueil';
 import Utilisateurs from './src/screens/Utilisateurs';
 import Profil from './src/screens/Profil';
+import Launchs from './src/screens/Launchs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
@@ -17,13 +18,14 @@ const App = ({props} :PropsWithChildren<any>): JSX.Element => {
   <PaperProvider>
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Accueil"
+        initialRouteName="Launchs"
         screenOptions={{
           header: (props) => <CustomNavigationBar {...props} />,
         }}>
         <Stack.Screen name="accueil" component={Accueil} />
         <Stack.Screen name="Utilisateurs" component={Utilisateurs} />
         <Stack.Screen name="Profil" component={Profil} />
+        <Stack.Screen name="Launchs" component={Launchs} />
       </Stack.Navigator>
     </NavigationContainer>
   </PaperProvider>
