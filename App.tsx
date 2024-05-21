@@ -6,8 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import Accueil from './src/screens/Accueil';
 import Utilisateurs from './src/screens/Utilisateurs';
 import Profil from './src/screens/Profil';
-import Launchs from './src/screens/Launchs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import LaunchPads from './src/screens/LaunchPads';
 
 
 const Stack = createNativeStackNavigator();
@@ -18,14 +18,14 @@ const App = ({props} :PropsWithChildren<any>): JSX.Element => {
   <PaperProvider>
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Launchs"
+        initialRouteName="Launch pads"
         screenOptions={{
           header: (props) => <CustomNavigationBar {...props} />,
         }}>
         <Stack.Screen name="accueil" component={Accueil} />
         <Stack.Screen name="Utilisateurs" component={Utilisateurs} />
         <Stack.Screen name="Profil" component={Profil} />
-        <Stack.Screen name="Launchs" component={Launchs} />
+        <Stack.Screen name="Launch pads" component={LaunchPads} />
       </Stack.Navigator>
     </NavigationContainer>
   </PaperProvider>
