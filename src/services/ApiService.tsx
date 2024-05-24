@@ -21,7 +21,6 @@ const ApiService = {
   getLaunchPads: async () : Promise<Pad[]> => {
     try {
       const response = await axios.get(`${API_URL_LAUNCHPADS}`);
-      console.log('Data fetched:', response.data.results);
       return response.data.results as Pad[];
     } catch (error) {
       console.error('Error fetching data pads:', error);
