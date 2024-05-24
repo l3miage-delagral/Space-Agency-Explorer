@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Dimensions, SafeAreaView, Image, Text, TouchableOpacity, ScrollView, ActivityIndicator, Linking } from 'react-native';
 import MapboxGL from '@rnmapbox/maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import api from '../services/ApiService';
 import { Pad } from '../models/types';
+import ApiService from '../services/ApiService';
 
 // Set your Mapbox access token
 MapboxGL.setAccessToken('sk.eyJ1IjoiYWxsZWt6eCIsImEiOiJjbHc3bjQ2OHoxaTBhMnRyejBydnV1NnNxIn0.lrAAByp5lJSk_PdIYYleEQ');
@@ -21,15 +21,12 @@ const LaunchPads = () => {
   useEffect(() => {
     const fetchPads = async () => {
       try {
-        const cachedPads = await AsyncStorage.getItem(CACHE_KEY);
-        if (cachedPads) {
-          setPads(JSON.parse(cachedPads));
-          setIsLoading(false);
+        const padsData = await ApiService.getLaunchPads();
+        if (Array.isArray(padsData)) {
+          setPads(padsData);
+        } else {
+          console.error('Pads data is not an array:', padsData);
         }
-
-        const padsData = await api.getLaunchPads();
-        setPads(padsData);
-        await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(padsData));
       } catch (error) {
         console.error('Failed to fetch launch pads:', error);
       } finally {
@@ -42,15 +39,11 @@ const LaunchPads = () => {
 
   const handleMarkerPress = (pad: Pad) => {
     setSelectedPad(pad);
-    setZoomLevel(10); // Set the desired zoom level when a marker is clicked
+    setZoomLevel(10);
     setCenterCoordinate([pad.longitude, pad.latitude]);
   };
 
   const handleMapPress = () => {
-    setSelectedPad(null);
-  };
-
-  const handleCloseCard = () => {
     setSelectedPad(null);
   };
 
@@ -69,7 +62,7 @@ const LaunchPads = () => {
           <MapboxGL.Camera
             zoomLevel={zoomLevel}
             centerCoordinate={centerCoordinate}
-            animationDuration={2000} // Animation duration in milliseconds
+            animationDuration={2000}
           />
           {pads.map(pad => (
             <MapboxGL.MarkerView
@@ -79,7 +72,7 @@ const LaunchPads = () => {
               <TouchableOpacity onPress={() => handleMarkerPress(pad)}>
                 <View style={styles.markerContainer}>
                   <Image
-                    source={{ uri: 'https://img.icons8.com/color/48/000000/marker.png' }}
+                    source={require('../assets/marker.png')}
                     style={styles.annotationImage}
                   />
                   <Text style={styles.markerText}>{pad.name}</Text>
@@ -95,13 +88,24 @@ const LaunchPads = () => {
               {selectedPad.description && <Text style={styles.cardDescription}>{selectedPad.description}</Text>}
               <Text style={styles.cardText}>Country: {selectedPad.country_code}</Text>
               <Text style={styles.cardText}>Total Launch Count: {selectedPad.total_launch_count}</Text>
-
+              <View style={styles.linksContainer}>
               {selectedPad.wiki_url && (
-                <Text style={styles.cardLink} onPress={() => Linking.openURL(selectedPad.wiki_url)}>Wikipedia</Text>
+                <TouchableOpacity onPress={() => Linking.openURL(selectedPad.wiki_url)} style={styles.logoButton}>
+                <Image
+                  source={require('../assets/wikipedia-logo.png')}
+                  style={styles.logo}
+                />
+              </TouchableOpacity>
               )}
               {selectedPad.map_url && (
-                <Text style={styles.cardLink} onPress={() => Linking.openURL(selectedPad.map_url)}>Map</Text>
+                <TouchableOpacity onPress={() => Linking.openURL(selectedPad.map_url)} style={styles.logoButton}>
+                <Image
+                  source={require('../assets/google_maps_logo.png')}
+                  style={styles.logo}
+                />
+              </TouchableOpacity>
               )}
+              </View>
             </ScrollView>
           </View>
         )}
@@ -150,23 +154,26 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
   },
-  cardLink: {
-    marginTop: 10,
-    fontSize: 16,
-    color: 'blue',
-    textDecorationLine: 'underline',
+  logo: {
+    width: 40,
+    height: 40,
+    marginHorizontal: 10,
   },
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: 'red',
+  linksContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 10,
+  },
+  logoButton: {
+    backgroundColor: 'white',
     padding: 5,
     borderRadius: 5,
-  },
-  closeButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+    marginLeft: 10,
   },
   loadingContainer: {
     flex: 1,
