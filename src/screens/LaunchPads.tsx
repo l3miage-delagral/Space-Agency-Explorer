@@ -86,8 +86,9 @@ const LaunchPads = () => {
             <ScrollView>
               <Text style={styles.cardTitle}>{selectedPad.name}</Text>
               {selectedPad.description && <Text style={styles.cardDescription}>{selectedPad.description}</Text>}
-              <Text style={styles.cardText}>Country: {selectedPad.country_code}</Text>
+              <Text style={styles.cardText}>Location: {selectedPad.location.name}</Text>
               <Text style={styles.cardText}>Total Launch Count: {selectedPad.total_launch_count}</Text>
+              <Text style={styles.cardText}>Orbital Launch Attempt Count : {selectedPad.orbital_launch_count ?? 0}</Text>
               <View style={styles.linksContainer}>
               {selectedPad.wiki_url && (
                 <TouchableOpacity onPress={() => Linking.openURL(selectedPad.wiki_url)} style={styles.logoButton}>
@@ -155,14 +156,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   logo: {
-    width: 40,
-    height: 40,
-    marginHorizontal: 10,
+    width: 50,
+    height: 50,
+    resizeMode: 'contain',
   },
   linksContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    marginTop: 10,
+    margin: 10,
   },
   logoButton: {
     backgroundColor: 'white',
