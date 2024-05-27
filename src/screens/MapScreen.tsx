@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Dimensions, SafeAreaView, Image, Text, TouchableOpacity, ScrollView, ActivityIndicator, Linking } from 'react-native';
 import MapboxGL from '@rnmapbox/maps';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Pad } from '../models/types';
 import ApiService from '../services/ApiService';
-
-// Set your Mapbox access token
-MapboxGL.setAccessToken('sk.eyJ1IjoiYWxsZWt6eCIsImEiOiJjbHc3bjQ2OHoxaTBhMnRyejBydnV1NnNxIn0.lrAAByp5lJSk_PdIYYleEQ');
-
-const CACHE_KEY = 'launchPadsCache';
 
 const MapScreen = () => {
   const [pads, setPads] = useState([] as Pad[]);
