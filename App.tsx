@@ -20,15 +20,8 @@ const App = ({props} :PropsWithChildren<any>): JSX.Element => {
         screenOptions={{
           header: (props) => <CustomNavigationBar {...props} />,
         }}>
-<<<<<<< HEAD
-        <Stack.Screen name="accueil" component={Accueil} />
-        <Stack.Screen name="Utilisateurs" component={Utilisateurs} />
-        <Stack.Screen name="Profil" component={Profil} />
-        <Stack.Screen name="Launch pads" component={LaunchPads} />
-=======
         <Stack.Screen name="Accueil" component={Accueil} />
         <Stack.Screen name="Map" component={MapScreen} />
->>>>>>> 70ae588 (feature: separation en screen et component pour la map)
       </Stack.Navigator>
     </NavigationContainer>
   </PaperProvider>

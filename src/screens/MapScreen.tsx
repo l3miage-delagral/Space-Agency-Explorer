@@ -4,6 +4,8 @@ import MapboxGL from '@rnmapbox/maps';
 import { Pad } from '../models/types';
 import ApiService from '../services/ApiService';
 
+MapboxGL.setAccessToken('sk.eyJ1IjoiYWxsZWt6eCIsImEiOiJjbHc3bjQ2OHoxaTBhMnRyejBydnV1NnNxIn0.lrAAByp5lJSk_PdIYYleEQ');
+
 const MapScreen = () => {
   const [pads, setPads] = useState([] as Pad[]);
   const [selectedPad, setSelectedPad] = useState<Pad | null>(null);
