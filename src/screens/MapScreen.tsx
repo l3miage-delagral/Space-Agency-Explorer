@@ -14,6 +14,8 @@ const CACHE_KEY = 'launchPadsCache';
 import { Pad } from '../models/types';
 import ApiService from '../services/ApiService';
 
+MapboxGL.setAccessToken('sk.eyJ1IjoiYWxsZWt6eCIsImEiOiJjbHc3bjQ2OHoxaTBhMnRyejBydnV1NnNxIn0.lrAAByp5lJSk_PdIYYleEQ');
+
 >>>>>>> a83b15e (fix: separation des responsabilités)
 const MapScreen = () => {
   const [pads, setPads] = useState([] as Pad[]);
