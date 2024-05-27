@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Dimensions, SafeAreaView, Image, Text, TouchableOpacity, ScrollView, ActivityIndicator, Linking } from 'react-native';
 import MapboxGL from '@rnmapbox/maps';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Pad } from '../models/types';
 import ApiService from '../services/ApiService';
 
@@ -16,6 +17,11 @@ MapboxGL.setAccessToken('sk.eyJ1IjoiYWxsZWt6eCIsImEiOiJjbHc3bjQ2OHoxaTBhMnRyejBy
 const CACHE_KEY = 'launchPadsCache';
 
 >>>>>>> 70ae588 (feature: separation en screen et component pour la map)
+=======
+import { Pad } from '../models/types';
+import ApiService from '../services/ApiService';
+
+>>>>>>> a83b15e (fix: separation des responsabilités)
 const MapScreen = () => {
   const [pads, setPads] = useState([] as Pad[]);
   const [selectedPad, setSelectedPad] = useState<Pad | null>(null);
