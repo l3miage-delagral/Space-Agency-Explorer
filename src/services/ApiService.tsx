@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_URL = 'https://ll.thespacedevs.com/2.2.0/agencies';
+const API_URL_Event_List = 'https://ll.thespacedevs.com/2.2.0/event/';
 
 const ApiService = {
   // Fonction pour récupérer des données depuis l'API
@@ -36,6 +37,17 @@ const ApiService = {
     }
   },
   // Autres fonctions pour appeler différentes routes de l'API
+
+  getEventList: () => {
+    try {
+      const apiUrl = `${API_URL_Event_List}`;
+      return axios.get(apiUrl);
+    } catch (error: any) {
+      console.log(error.error);
+      console.error('Error fetching launch pads:', error.message);
+      throw error;
+    }
+  },
 };
 
 export default ApiService;

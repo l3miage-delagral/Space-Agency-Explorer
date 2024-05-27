@@ -21,7 +21,7 @@ const App = ({props} :PropsWithChildren<any>): JSX.Element => {
         screenOptions={{
           header: (props) => <CustomNavigationBar {...props} />,
         }}>
-        <Stack.Screen name="Accueil" component={Accueil} />
+        <Stack.Screen name="accueil" component={Accueil} />
         <Stack.Screen name="Utilisateurs" component={Utilisateurs} />
         <Stack.Screen name="Profil" component={Profil} />
       </Stack.Navigator>
@@ -45,18 +45,22 @@ function CustomNavigationBar({
 
   return (
     <Appbar.Header>
-      {back ? <Appbar.Action icon={() => <MaterialIcons name="arrow-back" size={24} color="black" />} onPress={navigation.goBack} /> : null}
-      <Appbar.Content title={title} />
+      {back ? (
+        <Appbar.Action
+          icon={() => (
+            <MaterialIcons name="arrow-back" size={24} color="black" />
+          )}
+          onPress={navigation.goBack}
+        />
+      ) : null}
+      {back ? <Appbar.Content title={title} /> : null}
+      {!back ? <Appbar.Content title="{title}" /> : null}
+
       {!back ? (
         <Menu
           visible={visible}
           onDismiss={closeMenu}
-          anchor={
-            <Appbar.Action
-              icon="dots-vertical"
-              onPress={openMenu}
-            />
-          }>
+          anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}>
           <Menu.Item
             onPress={() => {
               console.log('Option 1 was pressed');
