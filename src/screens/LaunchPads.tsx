@@ -155,18 +155,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
   },
-  logo: {
-    width: 50,
-    height: 50,
-    resizeMode: 'contain',
+  cardLink: {
+    marginTop: 10,
+    fontSize: 16,
+    color: 'blue',
+    textDecorationLine: 'underline',
   },
-  linksContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    margin: 10,
-  },
-  logoButton: {
-    backgroundColor: 'white',
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'red',
     padding: 5,
     borderRadius: 5,
     shadowColor: '#000',
