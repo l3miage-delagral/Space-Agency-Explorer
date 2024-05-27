@@ -4,9 +4,8 @@ import { getHeaderTitle } from '@react-navigation/elements';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Accueil from './src/screens/Accueil';
-import Utilisateurs from './src/screens/Utilisateurs';
-import Profil from './src/screens/Profil';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MapScreen from './src/screens/MapScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -17,13 +16,12 @@ const App = ({props} :PropsWithChildren<any>): JSX.Element => {
   <PaperProvider>
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Accueil"
+        initialRouteName="Map"
         screenOptions={{
           header: (props) => <CustomNavigationBar {...props} />,
         }}>
         <Stack.Screen name="Accueil" component={Accueil} />
-        <Stack.Screen name="Utilisateurs" component={Utilisateurs} />
-        <Stack.Screen name="Profil" component={Profil} />
+        <Stack.Screen name="Map" component={MapScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   </PaperProvider>
