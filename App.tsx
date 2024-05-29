@@ -16,7 +16,7 @@ const App = ({props} :PropsWithChildren<any>): JSX.Element => {
   <PaperProvider>
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Map"
+        initialRouteName="Accueil"
         screenOptions={{
           header: (props) => <CustomNavigationBar {...props} />,
         }}>
