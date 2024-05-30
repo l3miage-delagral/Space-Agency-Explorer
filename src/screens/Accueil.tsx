@@ -1,47 +1,38 @@
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {PropsWithChildren, useEffect, useState} from 'react';
-import styles from '../components/styles';
-import api from '../services/ApiService';
+import ApiService from '../services/ApiService';
+import {Event} from '../models/types';
 
-const Stack = createNativeStackNavigator();
 const Accueil = ({navigation}: PropsWithChildren<any>): JSX.Element => {
-  const [events, setEvent] = useState([]);
+  const [events, setEvents] = useState([] as Event[]);
+  
   useEffect(() => {
-    api.getEventList().then(response => {
-      console.log(response.data);
-      setEvent(response.data);
-    });
-  }, []);
+    const fetchEvents = async () => {
+      try {
+        const eventsData = await ApiService.getEvent();
+        if (Array.isArray(eventsData)) {
+          setEvents(eventsData as Event[]);
+        } else {
+          console.error('Events data is not an array:', eventsData);
+        }
+      } catch (error) {
+        console.error('Failed to fetch launch events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []); 
 
   return (
-    <View style={styless.container}>
-      <Text style={styles.titre}>Accueil</Text>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Utilisateurs')}>
-        <Text style={styles.buttonText}>Voir la liste des utilisateurs</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Profil')}>
-        <Text style={styles.buttonText}>Voir votre profil</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={async () => await api.getEventList()}>
-        <Text style={styles.buttonText}>Call API fusées</Text>
-      </TouchableOpacity>
-
+    <View style={styles.cardContainer}>
       <FlatList
         data={events}
-        keyExtractor={(event: any) => event.count}
-        renderItem={({item}: any) => (
-          <View>
-            <Text>{item}</Text>
+        keyExtractor={(event) => event.id.toString()} 
+        renderItem={({ item }) => (
+          <View style={styles.eventContainer}>
+            <Text style={styles.eventName}>{item.name}</Text>
+            <Text style={styles.eventDescription}>{item.description}</Text>
+            <Text style={styles.eventLocation}>{item.location}</Text>
           </View>
         )}
       />
@@ -49,12 +40,50 @@ const Accueil = ({navigation}: PropsWithChildren<any>): JSX.Element => {
   );
 };
 
-const styless = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  cardContainer: {
+    padding: 10,
+  },
+  eventContainer: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  eventName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  eventDescription: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 5,
+  },
+  eventLocation: {
+    fontSize: 12,
+    color: '#888',
+  },
+  button: {
+    backgroundColor: '#007bff',
+    padding: 10,
+    marginVertical: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  titre: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
 });
 
