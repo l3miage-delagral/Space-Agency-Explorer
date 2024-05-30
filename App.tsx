@@ -7,6 +7,7 @@ import { Image, StyleSheet, View, Text } from 'react-native';
 import Accueil from './src/screens/Accueil';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MapScreen from './src/screens/MapScreen';
+import EventDetails from './src/screens/EventDetails';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,7 @@ const App = ({ props }: PropsWithChildren<any>): JSX.Element => {
         >
           <Stack.Screen name="Accueil" component={Accueil} />
           <Stack.Screen name="Map" component={MapScreen} />
+          <Stack.Screen name="EventDetails" component={EventDetails} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
