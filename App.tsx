@@ -65,7 +65,7 @@ function CustomNavigationBar({
               visible={visible}
               onDismiss={closeMenu}
               style={styles.menu}
-              anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
+              anchor={<Appbar.Action icon="menu" onPress={openMenu} />}
             >
               <Menu.Item
                 onPress={() => {
@@ -97,11 +97,10 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1,
     justifyContent: 'space-between',
+    flex: 1,
   },
   logoContainer: {
-    flex: 1,
     left: 0,
     justifyContent: 'center',
     marginTop: 10,
@@ -111,9 +110,11 @@ const styles = StyleSheet.create({
     height: 70,
   },
   titleContainer: {
-    flex: 2,
     alignItems: 'center',
     flexDirection: 'column',
+    position: 'absolute',
+    left: 0,
+    right: 0,
   },
   title: {
     fontSize: 20,

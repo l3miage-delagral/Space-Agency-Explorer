@@ -31,7 +31,6 @@ const ApiService = {
         const { data, timestamp } = JSON.parse(cachedData);
         const now = new Date().getTime();
         if (now - timestamp < CACHE_EXPIRATION) {
-          console.log('Using cached data');
           if (Array.isArray(data)) {
             return data;
           } else {
@@ -64,7 +63,6 @@ const ApiService = {
         const { data: events } = JSON.parse(cachedEvents);
         const event = events.find((e: Event) => e.id === eventId);
         if (event) {
-          console.log('Using cached event from event list');
           return event;
         }
       }
@@ -75,7 +73,6 @@ const ApiService = {
         const { data, timestamp } = JSON.parse(cachedEventDetails);
         const now = new Date().getTime();
         if (now - timestamp < CACHE_EXPIRATION) {
-          console.log('Using cached event details');
           return data;
         }
       }
@@ -99,7 +96,6 @@ const ApiService = {
         const { data, timestamp } = JSON.parse(cachedData);
         const now = new Date().getTime();
         if (now - timestamp < CACHE_EXPIRATION) {
-          console.log('Using cached data');
           if (Array.isArray(data)) {
             return data;
           } else {
