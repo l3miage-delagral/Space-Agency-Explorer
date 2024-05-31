@@ -47,11 +47,13 @@ function CustomNavigationBar({
         {back ? (
           <Appbar.BackAction onPress={navigation.goBack} />
         ) : (
-          <Image
+          <View style={styles.logoContainer}>
+            <Image
             source={require('./src/assets/logo.png')}
             style={styles.logo}
             resizeMode="contain"
           />
+          </View>
         )}
         <View style={styles.titleContainer}>
           <Text style={styles.title}>SAE</Text>
@@ -62,6 +64,7 @@ function CustomNavigationBar({
             <Menu
               visible={visible}
               onDismiss={closeMenu}
+              style={styles.menu}
               anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
             >
               <Menu.Item
@@ -97,13 +100,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
   },
+  logoContainer: {
+    flex: 1,
+    left: 0,
+    justifyContent: 'center',
+    marginTop: 10,
+  },
   logo: {
-    width: 40,
-    height: 40,
-    marginLeft: 10,
+    width: 70,
+    height: 70,
   },
   titleContainer: {
-    flex: 1,
+    flex: 2,
     alignItems: 'center',
     flexDirection: 'column',
   },
@@ -112,11 +120,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   menuContainer: {
-    marginRight: 10,
+    flex: 1,
+    alignItems: 'flex-end',
   },
   subtitle: {
     fontSize: 14,
   },
+  menu: {
+    
+  }
 });
 
 export default App;
