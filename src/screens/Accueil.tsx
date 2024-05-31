@@ -102,9 +102,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   eventContainer: {
-    flexDirection: 'row',
     padding: 10,
-    marginVertical: 5,
+    marginVertical: 10, // Augmenter la marge verticale
     backgroundColor: '#fff',
     borderRadius: 10,
     shadowColor: '#000',
@@ -114,14 +113,13 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   eventImage: {
-    width: 100,
-    height: 100,
+    width: '100%', // Prendre toute la largeur
+    height: 200, // Augmenter la hauteur de l'image
     borderRadius: 10,
-    marginRight: 10,
+    marginBottom: 10, // Ajouter une marge en bas
   },
   textContainer: {
     flex: 1,
-    justifyContent: 'center',
   },
   eventName: {
     fontSize: 18,

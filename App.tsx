@@ -1,11 +1,10 @@
-import React, { PropsWithChildren } from 'react';
-import { Appbar, Menu, PaperProvider } from 'react-native-paper';
+import React, { PropsWithChildren, useState } from 'react';
+import { Appbar, Menu, Provider as PaperProvider } from 'react-native-paper';
 import { getHeaderTitle } from '@react-navigation/elements';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { Image, StyleSheet, View, Text } from 'react-native';
 import Accueil from './src/screens/Accueil';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MapScreen from './src/screens/MapScreen';
 import EventDetails from './src/screens/EventDetails';
 
@@ -28,7 +27,7 @@ const App = ({ props }: PropsWithChildren<any>): JSX.Element => {
       </NavigationContainer>
     </PaperProvider>
   );
-}
+};
 
 function CustomNavigationBar({
   navigation,
@@ -36,7 +35,7 @@ function CustomNavigationBar({
   options,
   back,
 }: any) {
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
@@ -46,12 +45,7 @@ function CustomNavigationBar({
     <Appbar.Header>
       <View style={styles.headerContainer}>
         {back ? (
-          <Appbar.Action
-            icon={() => (
-              <MaterialIcons name="arrow-back" size={24} color="black" />
-            )}
-            onPress={navigation.goBack}
-          />
+          <Appbar.BackAction onPress={navigation.goBack} />
         ) : (
           <Image
             source={require('./src/assets/logo.png')}
@@ -61,6 +55,7 @@ function CustomNavigationBar({
         )}
         <View style={styles.titleContainer}>
           <Text style={styles.title}>SAE</Text>
+          <Text style={styles.subtitle}>Space Agency Explorer</Text>
         </View>
         {!back ? (
           <View style={styles.menuContainer}>
@@ -110,6 +105,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flex: 1,
     alignItems: 'center',
+    flexDirection: 'column',
   },
   title: {
     fontSize: 20,
@@ -117,6 +113,9 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     marginRight: 10,
+  },
+  subtitle: {
+    fontSize: 14,
   },
 });
 
