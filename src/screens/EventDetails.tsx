@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, Image, View, ActivityIndicator } from 'react-native';
+import { ScrollView, StyleSheet, Text, Image, View, ActivityIndicator, Linking } from 'react-native';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import ApiService from '../services/ApiService';
 import { Event } from '../models/types';
@@ -41,6 +41,12 @@ const EventDetails = ({ route, navigation }: PropsWithChildren<any>): JSX.Elemen
 
   const imageUrl = event.feature_image || 'https://via.placeholder.com/150';
 
+  const handleLinkPress = (url: string) => {
+    if (url !== '') {
+      Linking.openURL(url);
+    }
+  };
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Image source={{ uri: imageUrl }} style={styles.eventImage} />
@@ -48,6 +54,7 @@ const EventDetails = ({ route, navigation }: PropsWithChildren<any>): JSX.Elemen
       <Text style={styles.eventDate}>{new Date(event.date).toLocaleString()}</Text>
       <Text style={styles.eventDescription}>{event.description}</Text>
       <Text style={styles.eventLocation}>{event.location}</Text>
+      <Text style={styles.eventDescription}>last updated : {event.last_updated}</Text>
       {event.info_url && (
         <Text style={styles.eventInfoUrl}>
           <Text style={styles.boldText}>Info:</Text> {event.info_url[0]}
@@ -60,7 +67,7 @@ const EventDetails = ({ route, navigation }: PropsWithChildren<any>): JSX.Elemen
       )}
       {event.video_url && (
         <Text style={styles.eventVideoUrl}>
-          <Text style={styles.boldText}>Video:</Text> {event.video_url}
+          <Text style={styles.boldText}>Video:</Text> <Text onPress={() => handleLinkPress(event.video_url ?? "")}>{event.video_url}</Text>
         </Text>
       )}
     </ScrollView>

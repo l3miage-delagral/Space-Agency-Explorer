@@ -39,8 +39,6 @@ function CustomNavigationBar({
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
-  const title = getHeaderTitle(options, route.name);
-
   return (
     <Appbar.Header>
       <View style={styles.headerContainer}>
@@ -71,7 +69,7 @@ function CustomNavigationBar({
                 onPress={() => {
                   navigation.navigate('Map');
                 }}
-                title="Map"
+                title="Pads"
               />
               <Menu.Item
                 onPress={() => {

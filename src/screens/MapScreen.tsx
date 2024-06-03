@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Dimensions, SafeAreaView, Image, Text, TouchableOpacity, ScrollView, ActivityIndicator, Linking } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Dimensions, SafeAreaView, Image, Text, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import MapboxGL from '@rnmapbox/maps';
 import { Pad } from '../models/types';
-import ApiService from '../services/ApiService';
+import LaunchPads from '../components/LaunchPads';
 
 MapboxGL.setAccessToken('sk.eyJ1IjoiYWxsZWt6eCIsImEiOiJjbHdybjAwbm0wMmtyMmpyMGI3NTM1ZGJxIn0.HCm0h3p2ZLKJ32UOceA_Mw');
 
@@ -11,27 +11,11 @@ const MapScreen = () => {
   const [selectedPad, setSelectedPad] = useState<Pad | null>(null);
   const [zoomLevel, setZoomLevel] = useState(2);
   const [centerCoordinate, setCenterCoordinate] = useState([-95.844032, 36.966428]);
-  const [isLoading, setIsLoading] = useState(true);
   const { width, height } = Dimensions.get('window');  // Get screen dimensions
 
-  useEffect(() => {
-    const fetchPads = async () => {
-      try {
-        const padsData = await ApiService.getLaunchPads();
-        if (Array.isArray(padsData)) {
-          setPads(padsData);
-        } else {
-          console.error('Pads data is not an array:', padsData);
-        }
-      } catch (error) {
-        console.error('Failed to fetch launch pads:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPads();
-  }, []);
+  const handlePadsLoaded = (padsData: Pad[]) => {
+    setPads(padsData);
+  };
 
   const handleMarkerPress = (pad: Pad) => {
     setSelectedPad(pad);
@@ -45,16 +29,9 @@ const MapScreen = () => {
     setCenterCoordinate([-95.844032, 36.966428]); // Reset center coordinate
   };
 
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
-
   return (
     <SafeAreaView style={{ flex: 1, width, height }}>
+      <LaunchPads onPadsLoaded={handlePadsLoaded} />
       <View style={{ flex: 1 }}>
         <MapboxGL.MapView style={{ flex: 1 }} onPress={handleMapPress}>
           <MapboxGL.Camera

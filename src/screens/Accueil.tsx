@@ -1,66 +1,9 @@
-import {FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import {PropsWithChildren, useEffect, useState} from 'react';
-import ApiService from '../services/ApiService';
-import {Event} from '../models/types';
+import {StyleSheet, TextInput, View} from 'react-native';
+import {useState} from 'react';
+import Events from '../components/Events';
 
-const Accueil = ({navigation}: PropsWithChildren<any>): JSX.Element => {
-  const [events, setEvents] = useState([] as Event[]);
+const Accueil = ({ navigation }: any): JSX.Element => {
   const [search, setSearch] = useState('');
-  const [filteredEvents, setFilteredEvents] = useState([] as Event[]);
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const eventsData = await ApiService.getEvent();
-        if (Array.isArray(eventsData)) {
-          setEvents(eventsData as Event[]);
-          setFilteredEvents(eventsData as Event[]);
-        } else {
-          console.error('Events data is not an array:', eventsData);
-        }
-      } catch (error) {
-        console.error('Failed to fetch launch events:', error);
-      }
-    };
-
-    fetchEvents();
-  }, []);
-
-  useEffect(() => {
-    if (search === '') {
-      setFilteredEvents(events);
-    } else {
-      const filtered = events.filter(event => 
-        event.name.toLowerCase().includes(search.toLowerCase()) ||
-        event.description.toLowerCase().includes(search.toLowerCase())
-      );
-      setFilteredEvents(filtered);
-    }
-  }, [search, events]);
-
-  const renderEvent = ({ item }: { item: Event }) => {
-    const imageUrl = item.feature_image || 'https://via.placeholder.com/150'; // URL de l'image par défaut
-    return (
-      <TouchableOpacity style={styles.eventContainer} onPress={() => navigation.navigate('EventDetails', { eventId: item.id })}>
-        <Image source={{ uri: imageUrl }} style={styles.eventImage} />
-        <View style={styles.textContainer}>
-          <Text style={styles.eventName}>{item.name}</Text>
-          <Text style={styles.eventDescription}>{item.description}</Text>
-          <Text style={styles.eventLocation}>{item.location}</Text>
-          {item.info_url?.length > 0 && (
-            <Text style={styles.eventInfoUrl}>
-              <Text style={styles.boldText}>Info:</Text> {item.info_url[0]}
-            </Text>
-          )}
-          {item.news_url && (
-            <Text style={styles.eventNewsUrl}>
-              <Text style={styles.boldText}>News:</Text> {item.news_url}
-            </Text>
-          )}
-        </View>
-      </TouchableOpacity>
-    );
-  };
 
   return (
     <View style={styles.container}>
@@ -71,11 +14,7 @@ const Accueil = ({navigation}: PropsWithChildren<any>): JSX.Element => {
         onChangeText={setSearch}
       />
       <View style={styles.cardContainer}>
-        <FlatList
-          data={filteredEvents}
-          keyExtractor={(event) => event.id.toString()} 
-          renderItem={renderEvent}
-        />
+        <Events navigation={navigation} search={search} />
       </View>
     </View>
   );
@@ -84,7 +23,6 @@ const Accueil = ({navigation}: PropsWithChildren<any>): JSX.Element => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
@@ -100,6 +38,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     padding: 10,
     width: '100%',
+    height: '100%',
   },
   eventContainer: {
     padding: 10,
