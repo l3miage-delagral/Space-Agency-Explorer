@@ -14,8 +14,10 @@ export interface Pad {
     country_code: string;
     map_image: string;
     total_launch_count: number;
-    orbital_launch_count: number;
+    orbital_launch_count: number; // Propriété existante
+    orbital_launch_attempt_count: number; // Nouvelle propriété
 }
+
 
 export interface Location {
     id: number;
@@ -61,7 +63,7 @@ export interface Type {
 }
 
 export interface Launch {
-    id: number;
+    id: string;
     url: string;
     slug: string;
     name: string;
@@ -77,6 +79,7 @@ export interface Launch {
     holdreason?: string;
     failreason?: string;
     hashtag?: string;
+    launch_service_provider: Agency;
     rocket: Rocket;
     mission: Mission;
     pad: Pad;
@@ -90,6 +93,10 @@ export interface Launch {
     location_launch_attempt_count: number;
     pad_launch_attempt_count: number;
     agency_launch_attempt_count: number;
+    orbital_launch_attempt_count_year: number; // Nouvelle propriété
+    location_launch_attempt_count_year: number; // Nouvelle propriété
+    pad_launch_attempt_count_year: number; // Nouvelle propriété
+    agency_launch_attempt_count_year: number; // Nouvelle propriété
 }
 
 export interface Status {
@@ -170,10 +177,33 @@ export interface AstronautStatus {
 }
 
 export interface Agency {
-    id: number;
-    url: string;
-    name: string;
-    type: string;
+    "id": number,
+    "url"?: string,
+    "name": string,
+    "featured": boolean,
+    "type": string,
+    "country_code"?: string,
+    "abbrev": string,
+    "description": string,
+    "administrator"?: string,
+    "founding_year"?: string,
+    "launchers"?: string,
+    "spacecraft"?: string,
+    "launch_library_url"?: string,
+    "total_launch_count"?: number,
+    "consecutive_successful_launches"?: number,
+    "successful_launches"?: number,
+    "failed_launches"?: number,
+    "pending_launches"?: number,
+    "consecutive_successful_landings"?: number,
+    "successful_landings": number,
+    "failed_landings": number,
+    "attempted_landings": number,
+    "info_url"?: InfoURL,
+    "wiki_url"?: string,
+    "logo_url"?: string,
+    "image_url"?: string,
+    "nation_url"?: string,
 }
 
 export interface Mission {
@@ -183,11 +213,15 @@ export interface Mission {
     launch_designator: string;
     type: string;
     orbit: Orbit;
+    agencies?: Agency[];
+    infoURLs?: InfoURL[];
+    vidURLs?: VidURL[];
 }
 
 export interface Orbit {
     id: number;
     name: string;
+    abbrev: string;
 }
 
 export interface InfoURL {

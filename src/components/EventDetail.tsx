@@ -3,10 +3,10 @@ import { PropsWithChildren, useEffect, useState } from 'react';
 import ApiService from '../services/ApiService';
 import { Event } from '../models/types';
 
-const EventDetails = ({ route, navigation }: PropsWithChildren<any>): JSX.Element => {
-  const { eventId } = route.params;
-  const [event, setEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState(true);
+const EventDetail = ({ route, navigation }: PropsWithChildren<any>): JSX.Element => {
+    const { eventId, eventType } = route.params;
+    const [event, setEvent] = useState<Event | null>(null);
+    const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -137,4 +137,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EventDetails;
+export default EventDetail;

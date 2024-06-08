@@ -1,12 +1,11 @@
 import React, { PropsWithChildren, useState } from 'react';
 import { Appbar, Menu, Provider as PaperProvider } from 'react-native-paper';
-import { getHeaderTitle } from '@react-navigation/elements';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { Image, StyleSheet, View, Text } from 'react-native';
 import Accueil from './src/screens/Accueil';
 import MapScreen from './src/screens/MapScreen';
-import EventDetails from './src/screens/EventDetails';
+import Details from './src/screens/Details';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,7 +21,7 @@ const App = ({ props }: PropsWithChildren<any>): JSX.Element => {
         >
           <Stack.Screen name="Accueil" component={Accueil} />
           <Stack.Screen name="Map" component={MapScreen} />
-          <Stack.Screen name="EventDetails" component={EventDetails} />
+          <Stack.Screen name="Details" component={Details} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

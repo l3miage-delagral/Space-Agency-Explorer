@@ -3,9 +3,8 @@ import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react
 import { Event } from '../models/types';
 import ApiService from '../services/ApiService';
 
-const Events = ({ navigation }: any): JSX.Element => {
+const Events = ({ navigation, search }: { navigation: any, search: string }): JSX.Element => {
   const [events, setEvents] = useState([] as Event[]);
-  const [search, setSearch] = useState('');
   const [filteredEvents, setFilteredEvents] = useState([] as Event[]);
 
   useEffect(() => {
@@ -14,6 +13,7 @@ const Events = ({ navigation }: any): JSX.Element => {
         const eventsData = await ApiService.getEvent();
         if (Array.isArray(eventsData)) {
           setEvents(eventsData);
+          setFilteredEvents(eventsData); // Initialize filtered events with all events
         } else {
           console.error('Events data is not an array:', eventsData);
         }
@@ -29,7 +29,7 @@ const Events = ({ navigation }: any): JSX.Element => {
     if (search === '') {
       setFilteredEvents(events);
     } else {
-      const filtered = events.filter(event => 
+      const filtered = events.filter(event =>
         event.name.toLowerCase().includes(search.toLowerCase()) ||
         event.description.toLowerCase().includes(search.toLowerCase())
       );
@@ -67,7 +67,7 @@ const Events = ({ navigation }: any): JSX.Element => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={events}
+        data={filteredEvents}
         renderItem={renderEvent}
         keyExtractor={(item) => item.id.toString()}
       />
@@ -81,22 +81,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
-  searchBar: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    margin: 10,
-    paddingLeft: 10,
-    width: '90%',
-  },
-  cardContainer: {
-    padding: 10,
-    width: '100%',
-  },
   eventContainer: {
     padding: 10,
-    marginVertical: 10, // Augmenter la marge verticale
+    marginVertical: 10,
     backgroundColor: '#fff',
     borderRadius: 10,
     shadowColor: '#000',
@@ -106,10 +93,10 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   eventImage: {
-    width: '100%', // Prendre toute la largeur
-    height: 200, // Augmenter la hauteur de l'image
+    width: '100%',
+    height: 200,
     borderRadius: 10,
-    marginBottom: 10, // Ajouter une marge en bas
+    marginBottom: 10,
   },
   textContainer: {
     flex: 1,

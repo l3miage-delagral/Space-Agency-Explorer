@@ -1,14 +1,18 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Pad, Event } from '../models/types';
+import { Pad, Event, Launch } from '../models/types';
 
 const API_URL = 'https://ll.thespacedevs.com/2.2.0/agencies';
 const API_URL_EVENT_LIST = 'https://ll.thespacedevs.com/2.2.0/event/';
 const API_URL_LAUNCHPADS = 'https://ll.thespacedevs.com/2.2.0/pad';
+const API_URL_LAUNCHES = 'https://ll.thespacedevs.com/2.2.0/launch/';
+const API_URL_DOCKING = 'https://ll.thespacedevs.com/2.2.0/docking_event/';
 
 const CACHE_KEY_PADS = 'launchPadsCache';
 const CACHE_KEY_EVENTS = 'eventsCache';
 const CACHE_KEY_EVENT_DETAILS = 'eventDetailsCache';
+const CACHE_KEY_LAUNCHES = 'launchesCache';
+const CACHE_KEY_LAUNCHES_DETAILS = 'launchesDetailsCache';
 
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -116,6 +120,73 @@ const ApiService = {
       }
     } catch (error) {
       console.error('Error fetching data events:', error);
+      throw error;
+    }
+  },
+
+  getLaunches: async (): Promise<Launch[]> => {
+    try {
+      const cachedData = await AsyncStorage.getItem(CACHE_KEY_LAUNCHES);
+      if (cachedData) {
+        const { data, timestamp } = JSON.parse(cachedData);
+        const now = new Date().getTime();
+        if (now - timestamp < CACHE_EXPIRATION) {
+          if (Array.isArray(data)) {
+            return data as Launch[];
+          } else {
+            console.error('Cached data is not an array:', data);
+          }
+        }
+      }
+
+      const response = await axios.get(API_URL_LAUNCHES);
+      const data = response.data.results as Launch[];
+
+      if (Array.isArray(data)) {
+        await AsyncStorage.setItem(CACHE_KEY_LAUNCHES, JSON.stringify({ data, timestamp: new Date().getTime() }));
+        return data as Launch[];
+      } else {
+        console.error('Fetched data is not an array:', data);
+        return [];
+      }
+    } catch (error) {
+      console.error('Error fetching data events:', error);
+      throw error;
+    }
+  },
+
+  getLaunchById: async (launchId: string): Promise<Launch | undefined> => {
+    try {
+      // Check for cached launch list
+      const cachedLaunches = await AsyncStorage.getItem(CACHE_KEY_LAUNCHES);
+      if (cachedLaunches) {
+        const { data: launches } = JSON.parse(cachedLaunches);
+        const launch = launches.find((e: Launch) => e.id === launchId);
+        if (launch) {
+          return launch;
+        }
+      }
+
+      // Check for cached launch details
+      const cachedLaunchDetails = await AsyncStorage.getItem(CACHE_KEY_LAUNCHES_DETAILS + launchId);
+      if (cachedLaunchDetails) {
+        const { data, timestamp } = JSON.parse(cachedLaunchDetails);
+        const now = new Date().getTime();
+        if (now - timestamp < CACHE_EXPIRATION) {
+          return data as Launch;
+        }
+      }
+
+      // Fetch data from API
+      const response = await axios.get(`${API_URL_LAUNCHES}${launchId}`);
+      console.log('Launch data:', response);
+      const data = response.data as Launch;
+
+      await AsyncStorage.setItem(CACHE_KEY_LAUNCHES_DETAILS + launchId, JSON.stringify({ data, timestamp: new Date().getTime() }));
+      
+      return data as Launch;
+    } catch (error) {
+      console.error('Error fetching launch details:', error);
       throw error;
     }
   },
