@@ -5,7 +5,6 @@ import LaunchDetail from '../components/LaunchDetail';
 
 const Details = ({route, navigation }: PropsWithChildren<any>): JSX.Element => {
   const { eventId, eventType } = route.params;
-  console.log('Details:', route.params);
 
   const renderEventComponent = () => {
     if (eventType === 'launch') {

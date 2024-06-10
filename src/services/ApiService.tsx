@@ -20,7 +20,6 @@ const ApiService = {
   fetchSomeData: async () => {
     try {
       const response = await axios.get(`${API_URL}/pad`);
-      console.log('Data fetched:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -61,15 +60,6 @@ const ApiService = {
 
   getEventById: async (eventId: number): Promise<Event | undefined> => {
     try {
-      // Check for cached event list
-      const cachedEvents = await AsyncStorage.getItem(CACHE_KEY_EVENTS);
-      if (cachedEvents) {
-        const { data: events } = JSON.parse(cachedEvents);
-        const event = events.find((e: Event) => e.id === eventId);
-        if (event) {
-          return event;
-        }
-      }
 
       // Check for cached event details
       const cachedEventDetails = await AsyncStorage.getItem(CACHE_KEY_EVENT_DETAILS + eventId);
@@ -157,15 +147,6 @@ const ApiService = {
 
   getLaunchById: async (launchId: string): Promise<Launch | undefined> => {
     try {
-      // Check for cached launch list
-      const cachedLaunches = await AsyncStorage.getItem(CACHE_KEY_LAUNCHES);
-      if (cachedLaunches) {
-        const { data: launches } = JSON.parse(cachedLaunches);
-        const launch = launches.find((e: Launch) => e.id === launchId);
-        if (launch) {
-          return launch;
-        }
-      }
 
       // Check for cached launch details
       const cachedLaunchDetails = await AsyncStorage.getItem(CACHE_KEY_LAUNCHES_DETAILS + launchId);
@@ -179,7 +160,6 @@ const ApiService = {
 
       // Fetch data from API
       const response = await axios.get(`${API_URL_LAUNCHES}${launchId}`);
-      console.log('Launch data:', response);
       const data = response.data as Launch;
 
       await AsyncStorage.setItem(CACHE_KEY_LAUNCHES_DETAILS + launchId, JSON.stringify({ data, timestamp: new Date().getTime() }));

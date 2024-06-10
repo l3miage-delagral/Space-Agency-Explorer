@@ -67,6 +67,7 @@ function CustomNavigationBar({
               <Menu.Item
                 onPress={() => {
                   navigation.navigate('Map');
+                  closeMenu();
                 }}
                 title="Pads"
               />

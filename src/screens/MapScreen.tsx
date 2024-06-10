@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { StyleSheet, View, Dimensions, SafeAreaView, Image, Text, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import MapboxGL from '@rnmapbox/maps';
-import { Pad } from '../models/types';
+import { Launch, Pad } from '../models/types';
 import LaunchPads from '../components/LaunchPads';
 
 MapboxGL.setAccessToken('sk.eyJ1IjoiYWxsZWt6eCIsImEiOiJjbHdybjAwbm0wMmtyMmpyMGI3NTM1ZGJxIn0.HCm0h3p2ZLKJ32UOceA_Mw');
 
-const MapScreen = () => {
+const MapScreen = ({route}: PropsWithChildren<any>): JSX.Element => {
   const [pads, setPads] = useState([] as Pad[]);
   const [selectedPad, setSelectedPad] = useState<Pad | null>(null);
   const [zoomLevel, setZoomLevel] = useState(2);
   const [centerCoordinate, setCenterCoordinate] = useState([-95.844032, 36.966428]);
-  const { width, height } = Dimensions.get('window');  // Get screen dimensions
+  const { width, height } = Dimensions.get('window');
+  
+  useEffect(() => {
+    const pad = route.params.pad as Pad;
+    console.log('Pad :', pad);
+    if (pad) {
+      handleMarkerPress(pad);
+    }
+  }
+  , [route.params]);
 
   const handlePadsLoaded = (padsData: Pad[]) => {
     setPads(padsData);
@@ -25,8 +34,8 @@ const MapScreen = () => {
 
   const handleMapPress = () => {
     setSelectedPad(null);
-    setZoomLevel(2); // Reset zoom level
-    setCenterCoordinate([-95.844032, 36.966428]); // Reset center coordinate
+    setZoomLevel(2);
+    setCenterCoordinate([-95.844032, 36.966428]);
   };
 
   return (
@@ -61,7 +70,9 @@ const MapScreen = () => {
             <ScrollView>
               <Text style={styles.cardTitle}>{selectedPad.name}</Text>
               {selectedPad.description && <Text style={styles.cardDescription}>{selectedPad.description}</Text>}
-              <Text style={styles.cardText}>Location: {selectedPad.location.name}</Text>
+              { selectedPad.location &&
+                <Text style={styles.cardText}>Location: {selectedPad.location.name}</Text>
+              }
               <Text style={styles.cardText}>Total Launch Count: {selectedPad.total_launch_count}</Text>
               <Text style={styles.cardText}>Orbital Launch Attempt Count : {selectedPad.orbital_launch_count ?? 0}</Text>
               <View style={styles.linksContainer}>
