@@ -14,7 +14,7 @@ const CACHE_KEY_EVENT_DETAILS = 'eventDetailsCache';
 const CACHE_KEY_LAUNCHES = 'launchesCache';
 const CACHE_KEY_LAUNCHES_DETAILS = 'launchesDetailsCache';
 
-const CACHE_EXPIRATION = 24 * 60 * 60 * 1000; // 24 hours
+const CACHE_EXPIRATION = 24 * 60 * 60 * 1000; // 24 heures
 
 const ApiService = {
   fetchSomeData: async () => {

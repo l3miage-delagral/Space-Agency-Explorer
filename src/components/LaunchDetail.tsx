@@ -1,9 +1,10 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Image, ScrollView, Touchable, TouchableOpacity, Linking } from 'react-native';
-import { Launch, Pad } from '../models/types';
+import { Launch } from '../models/types';
 import ApiService from '../services/ApiService';
 import { Card, List, MD3Colors } from 'react-native-paper';
 import YoutubePlayer from 'react-native-youtube-iframe';
+import renderLaunchDetails from '../components/renderLaunchDetail';
 
 const LaunchDetail = ({ route, navigation }: PropsWithChildren<any>): JSX.Element => {
   const { eventId, eventType } = route.params;
@@ -71,118 +72,6 @@ const LaunchDetail = ({ route, navigation }: PropsWithChildren<any>): JSX.Elemen
 
   const imageUrl = launch.image || 'https://via.placeholder.com/150'; // Default image URL
 
-  const renderMissionDetails = () => {
-    return (
-      <View style={styles.contentSection}>
-        <Text style={styles.sectionTitle}>Mission: {launch.mission.name}</Text>
-        <Text style={styles.description}>{launch.mission.description}</Text>
-        <Text>Mission type : {launch.mission.type}</Text>
-        <Text>Orbit: {launch.mission.orbit.name}</Text>
-        <>
-          {launch.vidURLs && (
-            <Text>Video: {launch.vidURLs.map((vid) => vid).join(', ')}</Text>
-          )}
-          {launch.infoURLs && (
-            <Text>Info: {launch.infoURLs.map((info) => info).join(', ')}</Text>
-          )}
-        </>
-      </View>
-    );
-  };
-  
-  const renderProviderDetails = () => {
-    return (
-      <View style={styles.contentSection}>
-        <View style={styles.entete}>
-          <Text style={styles.sectionTitle}>{launch.launch_service_provider.name}</Text>
-          {launch.launch_service_provider.logo_url && (
-            <Image source={{ uri: launch.launch_service_provider.logo_url }} style={styles.imageLogo} />
-          )}
-        </View>
-
-        <>
-          {launch.launch_service_provider.description && (
-            <Text style={styles.description}>{launch.launch_service_provider.description}</Text>
-          )}
-        </>
-        <Text>Provider Type: {launch.launch_service_provider.type}</Text>
-        <Text>Provider Country: {launch.launch_service_provider.country_code}</Text>
-        <>
-          {launch.launch_service_provider.image_url && (
-            <Image source={{ uri: launch.launch_service_provider.image_url }} style={styles.imageProvider
-            } />
-          )}
-          {launch.launch_service_provider.url && (
-            <TouchableOpacity onPress={() => Linking.openURL(launch.launch_service_provider.url ?? "")}>
-              <Text>More Info</Text>
-            </TouchableOpacity>
-          )}
-          {launch.launch_service_provider.wiki_url && (
-            <TouchableOpacity style={styles.logoButton} onPress={() => Linking.openURL(launch.launch_service_provider.wiki_url)}>
-              <Image source={require('../assets/wikipedia-logo.png')} style={styles.imageLogo} />
-            </TouchableOpacity>
-          )}
-        </>
-      </View>
-    );
-  }
-
-  const renderRocketDetails = () => {
-    return (
-      <View style={styles.contentSection}>
-        <Text style={styles.sectionTitle}>{launch.rocket.configuration.name}</Text>
-        <Text style={styles.description}>{launch.rocket.configuration.description}</Text>
-        <Text>Family: {launch.rocket.configuration.family}</Text>
-        <Text>Variant: {launch.rocket.configuration.variant}</Text>
-        <Text>Maiden flight: {launch.rocket.configuration.maiden_flight}</Text>
-        <List.Subheader>Launch Attempt Count</List.Subheader>
-        <View style={styles.compteurs}>
-          <Text> Total launch count: {launch.rocket.configuration.total_launch_count}</Text>
-          <Text> Consecutive successful launches: {launch.rocket.configuration.consecutive_successful_launches}</Text>
-          <Text> Successful launches: {launch.rocket.configuration.successful_launches}</Text>
-          <Text> Failed launches: {launch.rocket.configuration.failed_launches}</Text>
-          <Text> Pending launches: {launch.rocket.configuration.pending_launches}</Text>
-        </View>
-        {launch.rocket.configuration.image_url && (
-            <Image source={{ uri: launch.rocket.configuration.image_url }} style={styles.imageProvider} />
-          )}
-        <List.Subheader>Manufacturer</List.Subheader>
-        <Text>Manufacturer: {launch.rocket.configuration.manufacturer.name}</Text>
-        <Text>Country: {launch.rocket.configuration.manufacturer.country_code}</Text>
-        <Text>Founding year: {launch.rocket.configuration.manufacturer.founding_year}</Text>
-        <>
-          {launch.rocket.configuration.manufacturer.wiki_url && (
-            <TouchableOpacity style={styles.logoButton} onPress={() => Linking.openURL(launch.rocket.configuration.manufacturer.wiki_url)}>
-              <Image source={require('../assets/wikipedia-logo.png')} style={styles.imageLogo} />
-            </TouchableOpacity>
-          )}
-        </>
-      </View>
-    );
-  }
-
-  const renderPadDetails = () => {
-    return (
-      <View style={styles.contentSection}>
-        <Text style={styles.sectionTitle}>Pad: {launch.pad.name}</Text>
-        {launch.pad.description && <Text style={styles.description}>{launch.pad.description}</Text>}
-        { launch.pad.location && (
-          <><Text>Location: {launch.pad.location.name}</Text><Text>Country: {launch.pad.location.country_code}</Text><Text style={styles.description}>{launch.pad.location.description}</Text></>
-        )}
-        
-        <Text>Latitude: {launch.pad.latitude}</Text>
-        <Text>Longitude: {launch.pad.longitude}</Text>
-        <Text>Total Launch Count: {launch.pad.total_launch_count}</Text>
-        <Text>Orbital Launch Attempt Count: {launch.pad.orbital_launch_attempt_count}</Text>
-        {launch.pad.map_image && (
-          <TouchableOpacity onPress={() => navigation.navigate('Map', { pad: launch.pad as Pad })}>
-            <Image source={{ uri: launch.pad.map_image }} style={styles.imageProvider} />
-          </TouchableOpacity>
-        )}
-      </View>
-    );
-  }
-
   const getYoutubeVideoId = (url: string) => {
     const match = url.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/) || url.match(/(?:https?:\/\/)?youtu\.be\/([a-zA-Z0-9_-]+)/);
     return match ? match[1] : null;
@@ -204,7 +93,7 @@ const LaunchDetail = ({ route, navigation }: PropsWithChildren<any>): JSX.Elemen
               expanded={expandedMission}
               onPress={() => handlePress('mission')}
               style={styles.accordion}>
-              {renderMissionDetails()}
+              {renderLaunchDetails({ launch: launch, section: 'mission', navigation })}
             </List.Accordion>
             <List.Accordion
               title="Launch Service Provider"
@@ -212,7 +101,7 @@ const LaunchDetail = ({ route, navigation }: PropsWithChildren<any>): JSX.Elemen
               expanded={expandedProvider}
               onPress={() => handlePress('provider')}
               style={styles.accordion}>
-              {renderProviderDetails()}
+              {renderLaunchDetails({ launch: launch, section: 'provider', navigation })}
             </List.Accordion>
             <List.Accordion
               title="Rocket Details"
@@ -220,7 +109,7 @@ const LaunchDetail = ({ route, navigation }: PropsWithChildren<any>): JSX.Elemen
               expanded={expandedRocket}
               onPress={() => handlePress('rocket')}
               style={styles.accordion}>
-              {renderRocketDetails()}
+              {renderLaunchDetails({ launch: launch, section: 'rocket', navigation })}
             </List.Accordion>
             <List.Accordion
               title="Pad Details"
@@ -228,7 +117,7 @@ const LaunchDetail = ({ route, navigation }: PropsWithChildren<any>): JSX.Elemen
               expanded={expandedPad}
               onPress={() => handlePress('pad')}
               style={styles.accordion}>
-              {renderPadDetails()}
+              {renderLaunchDetails({ launch: launch, section: 'pad', navigation })}
             </List.Accordion>
           </List.Section>
           <Text style={styles.description}>Last updated: {launch.last_updated}</Text>
@@ -279,7 +168,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   accordion: {
-    
+    minWidth: '100%',
+    maxWidth: '100%',
   },
   sectionAccordion: {
     width: '100%',

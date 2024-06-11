@@ -10,7 +10,7 @@ const Details = ({route, navigation }: PropsWithChildren<any>): JSX.Element => {
     if (eventType === 'launch') {
       return <LaunchDetail route={route} navigation={navigation}/>;
     } else if (eventType === 'event') {
-      return <EventDetail route={eventId} navigation={navigation} />; 
+      return <EventDetail route={route} navigation={navigation} />; 
     } else {
       return <Text>No component found for this event type</Text>;
     }

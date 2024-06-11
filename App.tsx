@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useState } from 'react';
 import { Appbar, Menu, Provider as PaperProvider } from 'react-native-paper';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { Image, StyleSheet, View, Text } from 'react-native';
+import { Image, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Accueil from './src/screens/Accueil';
 import MapScreen from './src/screens/MapScreen';
 import Details from './src/screens/Details';
@@ -44,13 +44,13 @@ function CustomNavigationBar({
         {back ? (
           <Appbar.BackAction onPress={navigation.goBack} />
         ) : (
-          <View style={styles.logoContainer}>
+          <TouchableOpacity style={styles.logoContainer} onPress={() => {navigation.navigate('Accueil', { type: 'launches' })}}>
             <Image
             source={require('./src/assets/logo.png')}
             style={styles.logo}
             resizeMode="contain"
           />
-          </View>
+          </TouchableOpacity>
         )}
         <View style={styles.titleContainer}>
           <Text style={styles.title}>SAE</Text>
@@ -73,15 +73,17 @@ function CustomNavigationBar({
               />
               <Menu.Item
                 onPress={() => {
-                  console.log('Option 2 was pressed');
+                  navigation.navigate('Accueil', { type: 'launches' });
+                  closeMenu();
                 }}
-                title="Astronauts"
+                title="Launches"
               />
               <Menu.Item
                 onPress={() => {
-                  console.log('Option 3 was pressed');
+                  navigation.navigate('Accueil', { type: 'events' });
+                  closeMenu();
                 }}
-                title="Missions"
+                title="Events"
               />
             </Menu>
           </View>

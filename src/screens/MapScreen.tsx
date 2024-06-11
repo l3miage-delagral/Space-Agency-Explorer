@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { StyleSheet, View, Dimensions, SafeAreaView, Image, Text, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import MapboxGL from '@rnmapbox/maps';
-import { Launch, Pad } from '../models/types';
+import { Pad } from '../models/types';
 import LaunchPads from '../components/LaunchPads';
 
 MapboxGL.setAccessToken('sk.eyJ1IjoiYWxsZWt6eCIsImEiOiJjbHdybjAwbm0wMmtyMmpyMGI3NTM1ZGJxIn0.HCm0h3p2ZLKJ32UOceA_Mw');
@@ -12,11 +12,10 @@ const MapScreen = ({route}: PropsWithChildren<any>): JSX.Element => {
   const [zoomLevel, setZoomLevel] = useState(2);
   const [centerCoordinate, setCenterCoordinate] = useState([-95.844032, 36.966428]);
   const { width, height } = Dimensions.get('window');
-  
+
   useEffect(() => {
-    const pad = route.params.pad as Pad;
-    console.log('Pad :', pad);
-    if (pad) {
+    if (route.params) {
+      const pad = route.params.pad as Pad;
       handleMarkerPress(pad);
     }
   }

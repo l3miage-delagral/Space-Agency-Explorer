@@ -13,7 +13,7 @@ const Events = ({ navigation, search }: { navigation: any, search: string }): JS
         const eventsData = await ApiService.getEvent();
         if (Array.isArray(eventsData)) {
           setEvents(eventsData);
-          setFilteredEvents(eventsData); // Initialize filtered events with all events
+          setFilteredEvents(eventsData);
         } else {
           console.error('Events data is not an array:', eventsData);
         }
@@ -42,7 +42,7 @@ const Events = ({ navigation, search }: { navigation: any, search: string }): JS
     return (
       <TouchableOpacity
         style={styles.eventContainer}
-        onPress={() => navigation.navigate('EventDetails', { eventId: item.id })}
+        onPress={() => navigation.navigate('Details', { eventId: item.id, eventType: 'event' })}
       >
         <Image source={{ uri: imageUrl }} style={styles.eventImage} />
         <View style={styles.textContainer}>

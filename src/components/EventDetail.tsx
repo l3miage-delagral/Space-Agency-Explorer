@@ -1,12 +1,13 @@
-import { ScrollView, StyleSheet, Text, Image, View, ActivityIndicator, Linking } from 'react-native';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, Image, View, ActivityIndicator, Linking, TouchableOpacity } from 'react-native';
 import ApiService from '../services/ApiService';
 import { Event } from '../models/types';
+import YoutubePlayer from 'react-native-youtube-iframe';
 
 const EventDetail = ({ route, navigation }: PropsWithChildren<any>): JSX.Element => {
-    const { eventId, eventType } = route.params;
-    const [event, setEvent] = useState<Event | null>(null);
-    const [loading, setLoading] = useState(true);
+  const { eventId } = route.params;
+  const [event, setEvent] = useState<Event | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -46,7 +47,14 @@ const EventDetail = ({ route, navigation }: PropsWithChildren<any>): JSX.Element
       Linking.openURL(url);
     }
   };
-  
+
+  const getYouTubeVideoId = (url: string) => {
+    const match = url.match(/(?:https?:\/\/)?(?:www\.)?youtu(?:\.be\/|be\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/|user\/(?:[^\#&?]*\/)+))([^#&?]*).*/);
+    return match && match[1].length === 11 ? match[1] : null;
+  };
+
+  const videoId = event.video_url ? getYouTubeVideoId(event.video_url) : null;
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Image source={{ uri: imageUrl }} style={styles.eventImage} />
@@ -54,21 +62,25 @@ const EventDetail = ({ route, navigation }: PropsWithChildren<any>): JSX.Element
       <Text style={styles.eventDate}>{new Date(event.date).toLocaleString()}</Text>
       <Text style={styles.eventDescription}>{event.description}</Text>
       <Text style={styles.eventLocation}>{event.location}</Text>
-      <Text style={styles.eventDescription}>last updated : {event.last_updated}</Text>
+      <Text style={styles.eventDescription}>Last updated: {event.last_updated}</Text>
       {event.info_url && (
-        <Text style={styles.eventInfoUrl}>
-          <Text style={styles.boldText}>Info:</Text> {event.info_url[0]}
-        </Text>
+        <TouchableOpacity onPress={() => handleLinkPress(event.info_url[0] ?? "")}>
+          <Text style={styles.linkText}>Info</Text>
+        </TouchableOpacity>
       )}
       {event.news_url && (
-        <Text style={styles.eventNewsUrl}>
-          <Text style={styles.boldText}>News:</Text> {event.news_url}
-        </Text>
+        <TouchableOpacity onPress={() => handleLinkPress(event.news_url ?? "")}>
+          <Text style={styles.linkText}>News site</Text>
+        </TouchableOpacity>
       )}
-      {event.video_url && (
-        <Text style={styles.eventVideoUrl}>
-          <Text style={styles.boldText}>Video:</Text> <Text onPress={() => handleLinkPress(event.video_url ?? "")}>{event.video_url}</Text>
-        </Text>
+      {videoId && (
+        <View style={styles.videoContainer}>
+          <YoutubePlayer
+            height={200}
+            play={false}
+            videoId={videoId}
+          />
+        </View>
       )}
     </ScrollView>
   );
@@ -114,26 +126,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
   },
-  eventInfoUrl: {
+  linkText: {
     fontSize: 14,
     color: '#1e90ff',
     marginTop: 5,
     textAlign: 'center',
   },
-  eventNewsUrl: {
-    fontSize: 14,
-    color: '#1e90ff',
-    marginTop: 5,
-    textAlign: 'center',
-  },
-  eventVideoUrl: {
-    fontSize: 14,
-    color: '#1e90ff',
-    marginTop: 5,
-    textAlign: 'center',
-  },
-  boldText: {
-    fontWeight: 'bold',
+  videoContainer: {
+    width: '100%',
+    height: 200,
+    marginTop: 10,
   },
 });
 

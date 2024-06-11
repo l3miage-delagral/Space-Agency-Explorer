@@ -1,9 +1,31 @@
-import {StyleSheet, TextInput, View} from 'react-native';
-import {useState} from 'react';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { useState } from 'react';
 import Launches from '../components/Launches';
+import Events from '../components/Events';
 
-const Accueil = ({ navigation }: any): JSX.Element => {
+const Accueil = ({ route, navigation }: any): JSX.Element => {
   const [search, setSearch] = useState('');
+  const type = route.params?.type || 'launches';
+
+  const renderComponent = () => {
+    switch (type) {
+      case 'events':
+        return <Events navigation={navigation} search={search} />;
+      case 'launches':
+      default:
+        return <Launches navigation={navigation} search={search} />;
+    }
+  };
+
+  const getPageName = (type: string) => {
+    switch (type) {
+      case 'events':
+        return 'Events';
+      case 'launches':
+      default:
+        return 'Launches';
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -13,8 +35,9 @@ const Accueil = ({ navigation }: any): JSX.Element => {
         value={search}
         onChangeText={setSearch}
       />
+      <Text style={styles.pageName}>{getPageName(type)}</Text>
       <View style={styles.cardContainer}>
-        <Launches navigation={navigation} search={search} />
+        {renderComponent()}
       </View>
     </View>
   );
@@ -39,6 +62,10 @@ const styles = StyleSheet.create({
     padding: 10,
     width: '100%',
     height: '100%',
+  },
+  pageName: {
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
