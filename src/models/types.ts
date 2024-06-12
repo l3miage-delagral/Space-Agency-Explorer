@@ -319,3 +319,32 @@ export interface Program {
     info_url?: string;
     wiki_url: string;
 }
+
+export interface Docking {
+    id: number;
+    docking: string;
+    departure: string | null;
+    flight_vehicle: {
+      id: number;
+      destination: string;
+      spacecraft: {
+        id: number;
+        name: string;
+        description: string;
+        spacecraft_config: {
+          name: string;
+          agency: {
+            name: string;
+          };
+          image_url: string;
+        };
+      };
+    };
+    docking_location: {
+      name: string;
+      spacestation: {
+        name: string;
+      };
+    };
+  }
+  

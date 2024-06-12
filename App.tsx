@@ -44,7 +44,7 @@ function CustomNavigationBar({
         {back ? (
           <Appbar.BackAction onPress={navigation.goBack} />
         ) : (
-          <TouchableOpacity style={styles.logoContainer} onPress={() => {navigation.navigate('Accueil', { type: 'launches' })}}>
+          <TouchableOpacity style={styles.logoContainer} onPress={() => {navigation.navigate('Accueil', { type: 'dockings' })}}>
             <Image
             source={require('./src/assets/logo.png')}
             style={styles.logo}
@@ -84,6 +84,13 @@ function CustomNavigationBar({
                   closeMenu();
                 }}
                 title="Events"
+              />
+              <Menu.Item
+                onPress={() => {
+                  navigation.navigate('Accueil', { type: 'dockings' });
+                  closeMenu();
+                }}
+                title="Dockings"
               />
             </Menu>
           </View>

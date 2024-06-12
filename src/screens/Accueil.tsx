@@ -2,18 +2,22 @@ import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { useState } from 'react';
 import Launches from '../components/Launches';
 import Events from '../components/Events';
+import Dockings from '../components/Dockings';
 
 const Accueil = ({ route, navigation }: any): JSX.Element => {
   const [search, setSearch] = useState('');
-  const type = route.params?.type || 'launches';
+  const type = route.params?.type || 'dockings';
 
   const renderComponent = () => {
     switch (type) {
       case 'events':
         return <Events navigation={navigation} search={search} />;
+      case 'dockings':
+        return <Dockings navigation={navigation} search={search} />;
       case 'launches':
-      default:
         return <Launches navigation={navigation} search={search} />;
+      default:
+        return <Dockings navigation={navigation} search={search} />;
     }
   };
 
@@ -22,8 +26,9 @@ const Accueil = ({ route, navigation }: any): JSX.Element => {
       case 'events':
         return 'Events';
       case 'launches':
-      default:
         return 'Launches';
+      default:
+        return 'Dockings';
     }
   };
 

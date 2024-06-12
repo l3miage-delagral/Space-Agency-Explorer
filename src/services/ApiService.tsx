@@ -1,6 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Pad, Event, Launch } from '../models/types';
+import { Pad, Event, Launch, Docking } from '../models/types';
 
 const API_URL = 'https://ll.thespacedevs.com/2.2.0/agencies';
 const API_URL_EVENT_LIST = 'https://ll.thespacedevs.com/2.2.0/event/';
@@ -13,6 +13,7 @@ const CACHE_KEY_EVENTS = 'eventsCache';
 const CACHE_KEY_EVENT_DETAILS = 'eventDetailsCache';
 const CACHE_KEY_LAUNCHES = 'launchesCache';
 const CACHE_KEY_LAUNCHES_DETAILS = 'launchesDetailsCache';
+const CACHE_KEY_DOCKING = 'dockingCache';
 
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000; // 24 heures
 
@@ -149,9 +150,9 @@ const ApiService = {
     try {
 
       // Check for cached launch details
-      const cachedLaunchDetails = await AsyncStorage.getItem(CACHE_KEY_LAUNCHES_DETAILS + launchId);
-      if (cachedLaunchDetails) {
-        const { data, timestamp } = JSON.parse(cachedLaunchDetails);
+      const cachedDockingDetails = await AsyncStorage.getItem(CACHE_KEY_LAUNCHES_DETAILS + launchId);
+      if (cachedDockingDetails) {
+        const { data, timestamp } = JSON.parse(cachedDockingDetails);
         const now = new Date().getTime();
         if (now - timestamp < CACHE_EXPIRATION) {
           return data as Launch;
@@ -167,6 +168,37 @@ const ApiService = {
       return data as Launch;
     } catch (error) {
       console.error('Error fetching launch details:', error);
+      throw error;
+    }
+  },
+
+  getDockings: async () => {
+    try {
+      const cachedData = await AsyncStorage.getItem(CACHE_KEY_DOCKING);
+      if (cachedData) {
+        const { data, timestamp } = JSON.parse(cachedData);
+        const now = new Date().getTime();
+        if (now - timestamp < CACHE_EXPIRATION) {
+          if (Array.isArray(data)) {
+            return data as Docking[];
+          } else {
+            console.error('Cached data is not an array:', data);
+          }
+        }
+      }
+
+      const response = await axios.get(API_URL_DOCKING);
+      const data = response.data.results as Docking[];
+
+      if (Array.isArray(data)) {
+        await AsyncStorage.setItem(CACHE_KEY_DOCKING, JSON.stringify({ data, timestamp: new Date().getTime() }));
+        return data as Docking[];
+      } else {
+        console.error('Fetched data is not an array:', data);
+        return [];
+      }
+    } catch (error) {
+      console.error('Error fetching data events:', error);
       throw error;
     }
   },
