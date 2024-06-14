@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, } from 'react-native';
 import React, { PropsWithChildren } from 'react';
 import EventDetail from '../components/EventDetail';
 import LaunchDetail from '../components/LaunchDetail';
+import DockingDetail from '../components/DockingDetail';
 
 const Details = ({route, navigation }: PropsWithChildren<any>): JSX.Element => {
   const { eventId, eventType } = route.params;
@@ -10,7 +11,9 @@ const Details = ({route, navigation }: PropsWithChildren<any>): JSX.Element => {
     if (eventType === 'launch') {
       return <LaunchDetail route={route} navigation={navigation}/>;
     } else if (eventType === 'event') {
-      return <EventDetail route={route} navigation={navigation} />; 
+      return <EventDetail route={eventId} navigation={navigation} />;
+    } else if (eventType === 'docking') {
+      return <DockingDetail route={eventId} navigation={navigation} />;
     } else {
       return <Text>No component found for this event type</Text>;
     }

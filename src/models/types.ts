@@ -32,7 +32,7 @@ export interface Location {
 }
 
 export interface Event {
-    id: number;
+    id: string;
     url: string;
     slug: string;
     name: string;
@@ -191,26 +191,9 @@ export interface SpacecraftStage {
     landing_crew: CrewMember[];
 }
 
-export interface Spacecraft {
-    id: number;
-    name: string;
-    serial_number: string;
-    status: SpacecraftStatus;
-    description: string;
-    spacecraft_config: SpacecraftConfiguration;
-}
-
 export interface SpacecraftStatus {
     id: number;
     name: string;
-}
-
-export interface SpacecraftConfiguration {
-    id: number;
-    url: string;
-    name: string;
-    type: string;
-    agency: Agency;
 }
 
 export interface CrewMember {
@@ -321,30 +304,78 @@ export interface Program {
 }
 
 export interface Docking {
-    id: number;
+    id: string;
+    url: string;
+    launch_id: string;
     docking: string;
     departure: string | null;
-    flight_vehicle: {
-      id: number;
-      destination: string;
-      spacecraft: {
-        id: number;
-        name: string;
-        description: string;
-        spacecraft_config: {
-          name: string;
-          agency: {
-            name: string;
-          };
-          image_url: string;
-        };
-      };
-    };
-    docking_location: {
-      name: string;
-      spacestation: {
-        name: string;
-      };
-    };
-  }
-  
+    flight_vehicle: FlightVehicle;
+    docking_location: DockingLocation;
+    space_station: SpaceStation;
+}
+
+export interface FlightVehicle {
+    id: number;
+    url: string;
+    destination: string;
+    mission_end: string | null;
+    spacecraft: Spacecraft;
+}
+
+export interface Spacecraft {
+    id: number;
+    url: string;
+    name: string;
+    serial_number: string;
+    is_placeholder: boolean;
+    in_space: boolean;
+    time_in_space: string;
+    time_docked: string;
+    flights_count: number;
+    mission_ends_count: number;
+    status: SpacecraftStatus;
+    description: string;
+    spacecraft_config: SpacecraftConfig;
+}
+
+export interface SpacecraftConfig {
+    id: number;
+    url: string;
+    name: string;
+    type: ConfigType;
+    agency: Agency;
+    in_use: boolean;
+    capability: string;
+    history: string;
+    details: string;
+    maiden_flight: string;
+    height: number;
+    diameter: number;
+    human_rated: boolean;
+    crew_capacity: number;
+    payload_capacity: number | null;
+    payload_return_capacity: number | null;
+    flight_life: string;
+    image_url: string;
+    nation_url: string | null;
+    wiki_link: string;
+    info_link: string;
+}
+
+export interface ConfigType {
+    id: number;
+    name: string;
+}
+
+export interface DockingLocation {
+    id: number;
+    name: string;
+    spacestation: SpaceStation;
+}
+
+export interface SpaceStation {
+    id: number;
+    url: string;
+    name: string;
+    image_url: string;
+}

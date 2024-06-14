@@ -4,7 +4,7 @@ import { Launch } from '../models/types';
 import ApiService from '../services/ApiService';
 import { Avatar, Card } from 'react-native-paper';
 
-const Launches = ({ navigation, search }: { navigation: any, search: string }): JSX.Element => {
+const Launches = ({ navigation, search, sortOption }: { navigation: any, search: string, sortOption: string }): JSX.Element => {
   const [launches, setLaunches] = useState([] as Launch[]);
   const [filteredLaunches, setFilteredLaunches] = useState([] as Launch[]);
 
@@ -27,15 +27,32 @@ const Launches = ({ navigation, search }: { navigation: any, search: string }): 
   }, []);
 
   useEffect(() => {
-    if (search === '') {
-      setFilteredLaunches(launches);
-    } else {
-      const filtered = launches.filter(launch =>
-        launch.name.toLowerCase().includes(search.toLowerCase())
-      );
-      setFilteredLaunches(filtered);
-    }
-  }, [search, launches]);
+    const filtered = search === ''
+      ? launches
+      : launches.filter(launch =>
+        launch.name.toLowerCase().includes(search.toLowerCase()) ||
+        launch.status.description.toLowerCase().includes(search.toLowerCase())
+        );
+    setFilteredLaunches(tri(filtered));
+  }, [search, launches, sortOption]);
+
+  const tri = (table: Launch[]) : Launch[] => {
+    const sortedlaunchs = [...table].sort((a, b) => {
+      switch (sortOption) {
+        case 'nameAsc':
+          return a.name.localeCompare(b.name);
+        case 'nameDesc':
+          return b.name.localeCompare(a.name);
+        case 'dateAsc':
+          return new Date(a.window_start).getTime() - new Date(b.window_start).getTime();
+        case 'dateDesc':
+          return new Date(b.window_start).getTime() - new Date(a.window_start).getTime();
+        default:
+          return 0;
+      }
+    });
+    return sortedlaunchs;
+  };
 
   const renderLaunch = ({ item }: { item: Launch }) => {
     const imageUrl = item.image || 'https://via.placeholder.com/150'; // Default image URL

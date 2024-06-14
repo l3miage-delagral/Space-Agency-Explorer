@@ -3,7 +3,7 @@ import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react
 import { Event } from '../models/types';
 import ApiService from '../services/ApiService';
 
-const Events = ({ navigation, search }: { navigation: any, search: string }): JSX.Element => {
+const Events = ({ navigation, search, sortOption}: { navigation: any, search: string, sortOption: string}): JSX.Element => {
   const [events, setEvents] = useState([] as Event[]);
   const [filteredEvents, setFilteredEvents] = useState([] as Event[]);
 
@@ -26,27 +26,44 @@ const Events = ({ navigation, search }: { navigation: any, search: string }): JS
   }, []);
 
   useEffect(() => {
-    if (search === '') {
-      setFilteredEvents(events);
-    } else {
-      const filtered = events.filter(event =>
-        event.name.toLowerCase().includes(search.toLowerCase()) ||
-        event.description.toLowerCase().includes(search.toLowerCase())
-      );
-      setFilteredEvents(filtered);
-    }
-  }, [search, events]);
+    const filtered = search === ''
+      ? events
+      : events.filter(event =>
+          event.name.toLowerCase().includes(search.toLowerCase()) ||
+          event.description.toLowerCase().includes(search.toLowerCase())
+        );
+    setFilteredEvents(tri(filtered));
+  }, [search, events, sortOption]);
+
+  const tri = (table: Event[]) : Event[] => {
+    const sortedEvents = [...table].sort((a, b) => {
+      switch (sortOption) {
+        case 'nameAsc':
+          return a.name.localeCompare(b.name);
+        case 'nameDesc':
+          return b.name.localeCompare(a.name);
+        case 'dateAsc':
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
+        case 'dateDesc':
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        default:
+          return 0;
+      }
+    });
+    return sortedEvents;
+  };
 
   const renderEvent = ({ item }: { item: Event }) => {
     const imageUrl = item.feature_image || 'https://via.placeholder.com/150'; // URL de l'image par défaut
     return (
       <TouchableOpacity
         style={styles.eventContainer}
-        onPress={() => navigation.navigate('Details', { eventId: item.id, eventType: 'event' })}
+        onPress={() => navigation.navigate('Details', { eventId: item.id.toString(), eventType: 'event' })}
       >
         <Image source={{ uri: imageUrl }} style={styles.eventImage} />
         <View style={styles.textContainer}>
           <Text style={styles.eventName}>{item.name}</Text>
+          <Text style={styles.eventDate}>{new Date(item.date).toLocaleString()}</Text>
           <Text style={styles.eventDescription}>{item.description}</Text>
           <Text style={styles.eventLocation}>{item.location}</Text>
           {item.info_url?.length > 0 && (
@@ -127,6 +144,11 @@ const styles = StyleSheet.create({
   },
   boldText: {
     fontWeight: 'bold',
+  },
+  eventDate: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 5,
   },
 });
 

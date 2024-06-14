@@ -5,7 +5,7 @@ import { Event } from '../models/types';
 import YoutubePlayer from 'react-native-youtube-iframe';
 
 const EventDetail = ({ route, navigation }: PropsWithChildren<any>): JSX.Element => {
-  const { eventId } = route.params;
+  const eventId = route;
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
 

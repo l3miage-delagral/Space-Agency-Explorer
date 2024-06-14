@@ -14,6 +14,7 @@ const CACHE_KEY_EVENT_DETAILS = 'eventDetailsCache';
 const CACHE_KEY_LAUNCHES = 'launchesCache';
 const CACHE_KEY_LAUNCHES_DETAILS = 'launchesDetailsCache';
 const CACHE_KEY_DOCKING = 'dockingCache';
+const CACHE_KEY_DOCKING_DETAILS = 'dockingDetailsCache';
 
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000; // 24 heures
 
@@ -202,6 +203,32 @@ const ApiService = {
       throw error;
     }
   },
+
+  getDockingById : async (dockingId: number): Promise<Docking | undefined> => {
+    try {
+
+      // Check for cached docking details
+      const cachedDockingDetails = await AsyncStorage.getItem(CACHE_KEY_DOCKING_DETAILS + dockingId);
+      if (cachedDockingDetails) {
+        const { data, timestamp } = JSON.parse(cachedDockingDetails);
+        const now = new Date().getTime();
+        if (now - timestamp < CACHE_EXPIRATION) {
+          return data as Docking;
+        }
+      }
+
+      // Fetch data from API
+      const response = await axios.get(`${API_URL_DOCKING}${dockingId}`);
+      const data = response.data as Docking;
+
+      await AsyncStorage.setItem(CACHE_KEY_DOCKING + dockingId, JSON.stringify({ data, timestamp: new Date().getTime() }));
+      
+      return data as Docking;
+    } catch (error) {
+      console.error('Error fetching docking details:', error);
+      throw error;
+    }
+  }
 };
 
 export default ApiService;

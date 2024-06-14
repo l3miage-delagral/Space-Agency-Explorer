@@ -3,9 +3,8 @@ import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-nativ
 import { Docking } from '../models/types';
 import ApiService from '../services/ApiService';
 import { Card } from 'react-native-paper';
-import Countdown from '../components/Countdown';
 
-const Dockings = ({ navigation, search }: any) => {
+const Dockings = ({ navigation, search, sortOption }: any) => {
   const [dockings, setDockings] = useState<Docking[]>([]);
   const [filteredDockings, setFilteredDockings] = useState([] as Docking[]);
   const [loading, setLoading] = useState(true);
@@ -31,41 +30,52 @@ const Dockings = ({ navigation, search }: any) => {
   }, []);
 
   useEffect(() => {
-    if (search === '') {
-      setFilteredDockings(dockings);
-    } else {
-      const filtered = dockings.filter(docking =>
-        docking.docking_location.name.toLowerCase().includes(search.toLowerCase()) ||
-        docking.docking.toLowerCase().includes(search.toLowerCase()) ||
+    const filtered = search === ''
+      ? dockings
+      : dockings.filter(docking =>
         docking.flight_vehicle.spacecraft.name.toLowerCase().includes(search.toLowerCase()) ||
-        docking.flight_vehicle.destination.toLowerCase().includes(search.toLowerCase())
-      );
-      setFilteredDockings(filtered);
-    }
-  }, [search, dockings]);
+        docking.flight_vehicle.spacecraft.description.toLowerCase().includes(search.toLowerCase())
+        );
+    setFilteredDockings(tri(filtered));
+  }, [search, dockings, sortOption]);
+
+  const tri = (table: Docking[]) : Docking[] => {
+    const sortedDockings = [...table].sort((a, b) => {
+      switch (sortOption) {
+        case 'nameAsc':
+          return a.flight_vehicle.spacecraft.name.localeCompare(b.flight_vehicle.spacecraft.name);
+        case 'nameDesc':
+          return b.flight_vehicle.spacecraft.name.localeCompare(a.flight_vehicle.spacecraft.name);
+        case 'dateAsc':
+          return new Date(a.docking).getTime() - new Date(b.docking).getTime();
+        case 'dateDesc':
+          return new Date(b.docking).getTime() - new Date(a.docking).getTime();
+        default:
+          return 0;
+      }
+    });
+    return sortedDockings;
+  };
 
   const renderDocking = ({ item }: { item: Docking }) => {
     const imageUrl = item.flight_vehicle.spacecraft.spacecraft_config.image_url || 'https://via.placeholder.com/150'; // Default image URL
-    // Calcul de la différence entre la date de docking et la date actuelle
-    const dockingTime = new Date(item.docking).getTime();
-    const currentTime = new Date().getTime();
-    const initialCount = Math.max(Math.floor((dockingTime - currentTime) / 1000), 0);
-
+    console.log('Navigating to Details with eventId:', item.id.toString());
     return (
       <Card
         style={styles.dockingContainer}
-        onPress={() => navigation.navigate('Details', { eventId: item.id, eventType: 'docking' })}
+        onPress={() => navigation.navigate('Details', { eventId: item.id.toString(), eventType: 'docking' })}
       >
+        
         <Card.Cover source={{ uri: imageUrl }} style={styles.dockingImage} />
         <Card.Content>
           <Text style={styles.title}>{item.flight_vehicle.spacecraft.name}</Text>
           
-          <Text style={styles.title}>Docking : {item.docking}</Text>
+          <Text style={styles.title}>Docking : {new Date(item.docking).toLocaleDateString()}</Text>
           <Text>Destination : {item.flight_vehicle.destination}</Text>
-          <Text>{item.docking_location.name}</Text>
-          <Text>{item.docking_location.spacestation.name}</Text>
-          <Text>{item.flight_vehicle.spacecraft.description}</Text>
-          <Text>{item.flight_vehicle.spacecraft.spacecraft_config.agency.name}</Text>
+          <Text>Location : {item.docking_location.name}</Text>
+          <Text>Spacestation : {item.docking_location.spacestation.name}</Text>
+          <Text>Description : {item.flight_vehicle.spacecraft.description}</Text>
+          <Text>Agency : {item.flight_vehicle.spacecraft.spacecraft_config.agency.name}</Text>
         </Card.Content>
       </Card>
     );

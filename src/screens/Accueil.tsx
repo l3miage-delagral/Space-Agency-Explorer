@@ -1,34 +1,38 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import {StyleSheet, Text, TextInput, View } from 'react-native';
 import { useState } from 'react';
 import Launches from '../components/Launches';
 import Events from '../components/Events';
 import Dockings from '../components/Dockings';
+import { Menu, Button } from 'react-native-paper';
 
 const Accueil = ({ route, navigation }: any): JSX.Element => {
   const [search, setSearch] = useState('');
+  const [sortOption, setSortOption] = useState('date');
   const type = route.params?.type || 'dockings';
+  const [visible, setVisible] = useState(false);
+
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
 
   const renderComponent = () => {
     switch (type) {
-      case 'events':
-        return <Events navigation={navigation} search={search} />;
       case 'dockings':
-        return <Dockings navigation={navigation} search={search} />;
+        return <Dockings navigation={navigation} search={search} sortOption={sortOption}/>;
       case 'launches':
-        return <Launches navigation={navigation} search={search} />;
+        return <Launches navigation={navigation} search={search} sortOption={sortOption}/>;
       default:
-        return <Dockings navigation={navigation} search={search} />;
+        return <Events navigation={navigation} search={search} sortOption={sortOption} />;
     }
   };
 
   const getPageName = (type: string) => {
     switch (type) {
-      case 'events':
-        return 'Events';
+      case 'dockings':
+        return 'Dockings';
       case 'launches':
         return 'Launches';
       default:
-        return 'Dockings';
+        return 'Events';
     }
   };
 
@@ -40,7 +44,19 @@ const Accueil = ({ route, navigation }: any): JSX.Element => {
         value={search}
         onChangeText={setSearch}
       />
+      <View style={styles.titre}>
       <Text style={styles.pageName}>{getPageName(type)}</Text>
+      <Menu
+        style={styles.menuTri}
+        visible={visible}
+        onDismiss={closeMenu}
+        anchor={<Button icon="sort" onPress={openMenu} children={undefined}/>}>
+        <Menu.Item onPress={() => { setSortOption('nameAsc'); closeMenu(); }} title="Name Asc" />
+        <Menu.Item onPress={() => { setSortOption('nameDesc'); closeMenu(); }} title="Name Desc" />
+        <Menu.Item onPress={() => { setSortOption('dateAsc'); closeMenu(); }} title="Date Asc" />
+        <Menu.Item onPress={() => { setSortOption('dateDesc'); closeMenu(); }} title="Date Desc" />
+      </Menu>
+      </View>
       <View style={styles.cardContainer}>
         {renderComponent()}
       </View>
@@ -71,6 +87,16 @@ const styles = StyleSheet.create({
   pageName: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  menuTri: {
+    alignSelf: 'flex-end',
+  },
+  titre: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '90%',
+    alignContent: 'center',
+    alignItems: 'center',
   },
 });
 
