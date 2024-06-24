@@ -7,8 +7,8 @@ import { Menu, Button } from 'react-native-paper';
 
 const Accueil = ({ route, navigation }: any): JSX.Element => {
   const [search, setSearch] = useState('');
-  const [sortOption, setSortOption] = useState('date');
-  const type = route.params?.type || 'dockings';
+  const [sortOption, setSortOption] = useState('dateDesc');
+  const type = route.params?.type || 'launches';
   const [visible, setVisible] = useState(false);
 
   const openMenu = () => setVisible(true);
@@ -19,7 +19,7 @@ const Accueil = ({ route, navigation }: any): JSX.Element => {
       case 'dockings':
         return <Dockings navigation={navigation} search={search} sortOption={sortOption}/>;
       case 'launches':
-        return <Launches navigation={navigation} search={search} sortOption={sortOption}/>;
+        return <Launches navigation={navigation} search={search} sortOption={sortOption} />;
       default:
         return <Events navigation={navigation} search={search} sortOption={sortOption} />;
     }

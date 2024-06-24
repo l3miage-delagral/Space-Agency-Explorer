@@ -48,7 +48,6 @@ const renderLaunchDetails = ({ launch, section, navigation }: RenderLaunchDetail
             </>
             <Text>Provider Type: {launch.launch_service_provider.type}</Text>
             <Text>Provider Country: {launch.launch_service_provider.country_code}</Text>
-            <>
             {launch.launch_service_provider.image_url && (
                 <Image source={{ uri: launch.launch_service_provider.image_url }} style={styles.imageProvider
                 } />
@@ -63,7 +62,7 @@ const renderLaunchDetails = ({ launch, section, navigation }: RenderLaunchDetail
                 <Image source={require('../assets/wikipedia-logo.png')} style={styles.imageLogo} />
                 </TouchableOpacity>
             )}
-            </>
+            
         </View>
         );
     }
@@ -193,7 +192,6 @@ const styles = StyleSheet.create({
       fontSize: 14,
     },
     imageProvider: {
-      width: '100%',
       height: 200,
       borderRadius: 10,
       marginBottom: 10,

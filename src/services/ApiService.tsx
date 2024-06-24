@@ -6,6 +6,7 @@ const API_URL = 'https://ll.thespacedevs.com/2.2.0/agencies';
 const API_URL_EVENT_LIST = 'https://ll.thespacedevs.com/2.2.0/event/';
 const API_URL_LAUNCHPADS = 'https://ll.thespacedevs.com/2.2.0/pad';
 const API_URL_LAUNCHES = 'https://ll.thespacedevs.com/2.2.0/launch/';
+const API_URL_LAUNCHES_UPCOMING = 'https://ll.thespacedevs.com/2.2.0/launch/upcoming/';
 const API_URL_DOCKING = 'https://ll.thespacedevs.com/2.2.0/docking_event/';
 
 const CACHE_KEY_PADS = 'launchPadsCache';
@@ -15,6 +16,8 @@ const CACHE_KEY_LAUNCHES = 'launchesCache';
 const CACHE_KEY_LAUNCHES_DETAILS = 'launchesDetailsCache';
 const CACHE_KEY_DOCKING = 'dockingCache';
 const CACHE_KEY_DOCKING_DETAILS = 'dockingDetailsCache';
+const CACHE_KEY_LAUNCHES_UPCOMING = 'launchesUpcomingCache';
+
 
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000; // 24 heures
 
@@ -228,7 +231,39 @@ const ApiService = {
       console.error('Error fetching docking details:', error);
       throw error;
     }
+  },
+  
+  getUpcomingLaunches: async (): Promise<Launch[]> => {
+    try {
+      const cachedData = await AsyncStorage.getItem(CACHE_KEY_LAUNCHES_UPCOMING);
+      if (cachedData) {
+        const { data, timestamp } = JSON.parse(cachedData);
+        const now = new Date().getTime();
+        if (now - timestamp < CACHE_EXPIRATION) {
+          if (Array.isArray(data)) {
+            return data as Launch[];
+          } else {
+            console.error('Cached data is not an array:', data);
+          }
+        }
+      }
+
+      const response = await axios.get(API_URL_LAUNCHES_UPCOMING);
+      const data = response.data.results as Launch[];
+
+      if (Array.isArray(data)) {
+        await AsyncStorage.setItem(CACHE_KEY_LAUNCHES_UPCOMING, JSON.stringify({ data, timestamp: new Date().getTime() }));
+        return data as Launch[];
+      } else {
+        console.error('Fetched data is not an array:', data);
+        return [];
+      }
+    } catch (error) {
+      console.error('Error fetching upcoming launches:', error);
+      throw error;
+    }
   }
+
 };
 
 export default ApiService;

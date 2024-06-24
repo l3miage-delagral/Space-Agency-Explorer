@@ -47,13 +47,27 @@ const DockingDetail = ({ route }: any) => {
       <Card.Cover source={{ uri: imageUrl }} style={styles.image} />
       <Card.Content style={styles.cardContent}>
         <Text style={styles.dockingName}>{docking.flight_vehicle.spacecraft.spacecraft_config.name}</Text>
-        <Text style={styles.dockingDate}> Docking : {}</Text>
-        <Text style={styles.dockingDate}> Departure : {docking.departure}</Text>
+        <Text style={styles.dockingDate}> Docking : {new Date(docking.docking).toLocaleDateString()}</Text>
+        <Text style={styles.dockingDate}> Departure : {new Date(docking.departure).toLocaleDateString()}</Text>
+        {/* <Text style={styles.dockingDescription}>{docking.}</Text> */}
+        
 
-        <List.Subheader style={styles.titleSection}>Docking</List.Subheader>
+        <List.Subheader style={styles.titleSection}>Flight vehicule</List.Subheader>
         <Text style={styles.dockingDestination}>Destination : {docking.flight_vehicle.destination}</Text>
-        <Text style={styles.dockingLocation}>{docking.docking_location.name}</Text>
-        <Text style={styles.spacestationName}>{docking.space_station.name}</Text>
+        <Text style={styles.dockingLocation}>Mission end : {new Date(docking.flight_vehicle.mission_end).toLocaleDateString()}</Text>
+
+        <List.Subheader style={styles.titleSection}>SpaceCraft</List.Subheader>
+        <Text style={styles.spacestationName}>{docking.flight_vehicle.spacecraft.name}</Text>
+        <Text style={styles.spacestationName}>{docking.flight_vehicle.spacecraft.description}</Text>
+        <Text style={styles.spacestationName}>Flights count : {docking.flight_vehicle.spacecraft.flights_count}</Text>
+        <Text style={styles.spacestationName}>Status : {docking.flight_vehicle.spacecraft.status.name}</Text>
+
+        <List.Subheader style={styles.titleSection}>SpaceCraft config</List.Subheader>
+        <Text style={styles.spacestationName}>{docking.flight_vehicle.spacecraft.spacecraft_config.name}</Text>
+        <Text style={styles.spacestationName}>Type : {docking.flight_vehicle.spacecraft.spacecraft_config.type.name}</Text>
+        <Text style={styles.spacestationName}>Agency : {docking.flight_vehicle.spacecraft.spacecraft_config.agency.name}</Text>
+        <Text style={styles.spacestationName}>Agency type : {docking.flight_vehicle.spacecraft.spacecraft_config.agency.type}</Text>
+
       </Card.Content>
     </Card>
     </ScrollView>

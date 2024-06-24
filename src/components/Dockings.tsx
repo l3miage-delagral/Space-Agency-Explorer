@@ -59,7 +59,6 @@ const Dockings = ({ navigation, search, sortOption }: any) => {
 
   const renderDocking = ({ item }: { item: Docking }) => {
     const imageUrl = item.flight_vehicle.spacecraft.spacecraft_config.image_url || 'https://via.placeholder.com/150'; // Default image URL
-    console.log('Navigating to Details with eventId:', item.id.toString());
     return (
       <Card
         style={styles.dockingContainer}
