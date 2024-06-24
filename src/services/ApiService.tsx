@@ -209,7 +209,18 @@ const ApiService = {
 
   getDockingById : async (dockingId: number): Promise<Docking | undefined> => {
     try {
-
+      // Check for cached dockings list
+    const cachedDockings = await AsyncStorage.getItem(CACHE_KEY_DOCKING);
+    if (cachedDockings) {
+      const { data: dockings, timestamp } = JSON.parse(cachedDockings);
+      const now = new Date().getTime();
+      if (now - timestamp < CACHE_EXPIRATION) {
+        const docking = dockings.find((d: Docking) => d.id === dockingId.toString());
+        if (docking) {
+          return docking;
+        }
+      }
+    }
       // Check for cached docking details
       const cachedDockingDetails = await AsyncStorage.getItem(CACHE_KEY_DOCKING_DETAILS + dockingId);
       if (cachedDockingDetails) {

@@ -1,9 +1,9 @@
-import {StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { useState } from 'react';
 import Launches from '../components/Launches';
 import Events from '../components/Events';
 import Dockings from '../components/Dockings';
-import { Menu, Button } from 'react-native-paper';
+import { Menu, Button, IconButton } from 'react-native-paper';
 
 const Accueil = ({ route, navigation }: any): JSX.Element => {
   const [search, setSearch] = useState('');
@@ -38,24 +38,32 @@ const Accueil = ({ route, navigation }: any): JSX.Element => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Rechercher des événements"
-        value={search}
-        onChangeText={setSearch}
-      />
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Rechercher des événements"
+          value={search}
+          onChangeText={setSearch}
+        />
+        <IconButton
+          icon="close"
+          size={20}
+          onPress={() => setSearch('')}
+          style={styles.clearButton}
+        />
+      </View>
       <View style={styles.titre}>
-      <Text style={styles.pageName}>{getPageName(type)}</Text>
-      <Menu
-        style={styles.menuTri}
-        visible={visible}
-        onDismiss={closeMenu}
-        anchor={<Button icon="sort" onPress={openMenu} children={undefined}/>}>
-        <Menu.Item onPress={() => { setSortOption('nameAsc'); closeMenu(); }} title="Name Asc" />
-        <Menu.Item onPress={() => { setSortOption('nameDesc'); closeMenu(); }} title="Name Desc" />
-        <Menu.Item onPress={() => { setSortOption('dateAsc'); closeMenu(); }} title="Date Asc" />
-        <Menu.Item onPress={() => { setSortOption('dateDesc'); closeMenu(); }} title="Date Desc" />
-      </Menu>
+        <Text style={styles.pageName}>{getPageName(type)}</Text>
+        <Menu
+          style={styles.menuTri}
+          visible={visible}
+          onDismiss={closeMenu}
+          anchor={<Button icon="sort" onPress={openMenu} children={undefined}/>}>
+          <Menu.Item onPress={() => { setSortOption('nameAsc'); closeMenu(); }} title="Name Asc" />
+          <Menu.Item onPress={() => { setSortOption('nameDesc'); closeMenu(); }} title="Name Desc" />
+          <Menu.Item onPress={() => { setSortOption('dateAsc'); closeMenu(); }} title="Date Asc" />
+          <Menu.Item onPress={() => { setSortOption('dateDesc'); closeMenu(); }} title="Date Desc" />
+        </Menu>
       </View>
       <View style={styles.cardContainer}>
         {renderComponent()}
@@ -69,6 +77,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
+    marginBottom: 100,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '90%',
   },
   searchBar: {
     height: 40,
@@ -77,7 +91,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     margin: 10,
     paddingLeft: 10,
-    width: '90%',
+    flex: 1,
+  },
+  clearButton: {
+    marginRight: 10,
+    position: 'absolute',
+    marginLeft: '85%',
   },
   cardContainer: {
     padding: 10,

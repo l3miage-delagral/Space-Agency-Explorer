@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Event } from '../models/types';
 import ApiService from '../services/ApiService';
+import style from '../models/style';
+import { Card } from 'react-native-paper';
 
 const Events = ({ navigation, search, sortOption}: { navigation: any, search: string, sortOption: string}): JSX.Element => {
   const [events, setEvents] = useState([] as Event[]);
@@ -56,15 +58,16 @@ const Events = ({ navigation, search, sortOption}: { navigation: any, search: st
   const renderEvent = ({ item }: { item: Event }) => {
     const imageUrl = item.feature_image || 'https://via.placeholder.com/150'; // URL de l'image par défaut
     return (
-      <TouchableOpacity
-        style={styles.eventContainer}
-        onPress={() => navigation.navigate('Details', { eventId: item.id.toString(), eventType: 'event' })}
+      <Card
+        style={style.Card}
+        onPress={() => navigation.navigate('Details', { eventId: item.id, eventType: 'event' })}
       >
-        <Image source={{ uri: imageUrl }} style={styles.eventImage} />
-        <View style={styles.textContainer}>
-          <Text style={styles.eventName}>{item.name}</Text>
-          <Text style={styles.eventDate}>{new Date(item.date).toLocaleString()}</Text>
-          <Text style={styles.eventDescription}>{item.description}</Text>
+        <Card.Cover source={{ uri: imageUrl }} style={style.Cover} />
+
+        <Card.Content>
+          <Text style={style.Title}>{item.name}</Text>
+          <Text style={style.Status}>{new Date(item.date).toLocaleString()}</Text>
+          <Text style={style.Description}>{item.description}</Text>
           <Text style={styles.eventLocation}>{item.location}</Text>
           {item.info_url?.length > 0 && (
             <Text style={styles.eventInfoUrl}>
@@ -72,12 +75,12 @@ const Events = ({ navigation, search, sortOption}: { navigation: any, search: st
             </Text>
           )}
           {item.news_url && (
-            <Text style={styles.eventNewsUrl}>
+            <Text style={styles.eventNewsUrl} onPress={() => Linking.openURL(item.news_url ?? "")}>
               <Text style={styles.boldText}>News:</Text> {item.news_url}
             </Text>
           )}
-        </View>
-      </TouchableOpacity>
+        </Card.Content>
+      </Card>
     );
   };
 
@@ -98,39 +101,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
-  eventContainer: {
-    padding: 10,
-    marginVertical: 10,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  eventImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  textContainer: {
-    flex: 1,
-  },
-  eventName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  eventDescription: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 5,
-  },
   eventLocation: {
-    fontSize: 12,
+    fontSize: 16,
     color: '#888',
+    fontWeight: 'bold',
   },
   eventInfoUrl: {
     fontSize: 12,
@@ -144,11 +118,6 @@ const styles = StyleSheet.create({
   },
   boldText: {
     fontWeight: 'bold',
-  },
-  eventDate: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 5,
   },
 });
 

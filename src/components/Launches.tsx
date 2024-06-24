@@ -5,6 +5,7 @@ import ApiService from '../services/ApiService';
 import { Card, Button } from 'react-native-paper';
 import Countdown from '../utils/Countdown';
 import { addEventToCalendar } from '../utils/addEventToCalendar';
+import style from '../models/style';
 
 const Launches = ({ navigation, search, sortOption }: { navigation: any, search: string, sortOption: string }): JSX.Element => {
   const [launches, setLaunches] = useState([] as Launch[]);
@@ -85,17 +86,17 @@ const Launches = ({ navigation, search, sortOption }: { navigation: any, search:
 
     return (
       <Card
-        style={styles.launchContainer}
+        style={style.Card}
         onPress={() => navigation.navigate('Details', { eventId: item.id, eventType: 'launch' })}
       >
-        <Card.Cover source={{ uri: imageUrl }} style={styles.launchImage} />
+        <Card.Cover source={{ uri: imageUrl }} style={style.Cover} />
         <Card.Content>
-          <Text style={styles.launchName}>{item.name ?? "Unknown Name"}</Text>
-          <Text style={styles.launchStatus}>{statusName}</Text>
-          <Text style={styles.launchDescription}>By {item.launch_service_provider.name}</Text>
+          <Text style={style.Title}>{item.name ?? "Unknown Name"}</Text>
+          <Text style={style.Status}>{statusName}</Text>
+          <Text style={styles.launchName}>By {item.launch_service_provider.name}</Text>
           {launchDate && launchDate > new Date() && <Countdown targetDate={launchDate} />}
           <Text style={styles.launchDate}>{launchDateString}</Text>
-          <Text style={styles.launchDescription}>{item.status.description}</Text>
+          <Text style={style.Description}>{item.status.description}</Text>
           {launchDate && launchDate > new Date() && (
             <Button
               mode="contained"
@@ -136,43 +137,17 @@ const styles = StyleSheet.create({
   filterButton: {
     marginBottom: 10,
   },
-  launchContainer: {
-    backgroundColor: '#fff',
-    padding: 15,
-    marginVertical: 10,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  launchImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 10,
-    marginBottom: 10,
-  },
   launchName: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
-  },
-  launchStatus: {
-    fontSize: 14,
-    color: '#888',
-    marginBottom: 5,
+    alignSelf: 'center',
   },
   launchDate: {
     fontSize: 14,
     color: '#1e90ff',
     alignSelf: 'center',
     margin: 5,
-  },
-  launchDescription: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 5,
   },
 });
 

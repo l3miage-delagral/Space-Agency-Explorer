@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-nativ
 import { Docking } from '../models/types';
 import ApiService from '../services/ApiService';
 import { Card } from 'react-native-paper';
+import style from '../models/style';
 
 const Dockings = ({ navigation, search, sortOption }: any) => {
   const [dockings, setDockings] = useState<Docking[]>([]);
@@ -61,20 +62,22 @@ const Dockings = ({ navigation, search, sortOption }: any) => {
     const imageUrl = item.flight_vehicle.spacecraft.spacecraft_config.image_url || 'https://via.placeholder.com/150'; // Default image URL
     return (
       <Card
-        style={styles.dockingContainer}
+        style={style.Card}
         onPress={() => navigation.navigate('Details', { eventId: item.id.toString(), eventType: 'docking' })}
       >
         
-        <Card.Cover source={{ uri: imageUrl }} style={styles.dockingImage} />
+        <Card.Cover source={{ uri: imageUrl }} style={style.Cover} />
         <Card.Content>
-          <Text style={styles.title}>{item.flight_vehicle.spacecraft.name}</Text>
+          <Text style={style.Title}>{item.flight_vehicle.spacecraft.name}</Text>
           
-          <Text style={styles.title}>Docking : {new Date(item.docking).toLocaleDateString()}</Text>
-          <Text>Destination : {item.flight_vehicle.destination}</Text>
-          <Text>Location : {item.docking_location.name}</Text>
-          <Text>Spacestation : {item.docking_location.spacestation.name}</Text>
-          <Text>Description : {item.flight_vehicle.spacecraft.description}</Text>
-          <Text>Agency : {item.flight_vehicle.spacecraft.spacecraft_config.agency.name}</Text>
+          <Text style={style.Status}>Docking : {new Date(item.docking).toLocaleDateString()}</Text>
+          <Text style={styles.Provider}>By {item.flight_vehicle.spacecraft.spacecraft_config.agency.name}</Text>
+          <View style={style.Description}>
+            <Text>Destination : {item.flight_vehicle.destination}</Text>
+            <Text>Location : {item.docking_location.name}</Text>
+            <Text>Spacestation : {item.docking_location.spacestation.name}</Text>
+            <Text>Description : {item.flight_vehicle.spacecraft.description}</Text>
+          </View>
         </Card.Content>
       </Card>
     );
@@ -101,26 +104,11 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#f0f0f0',
   },
-  title: {
+  Provider: {
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  dockingContainer: {
-    backgroundColor: '#fff',
-    padding: 15,
-    marginVertical: 10,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  dockingImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 5,
+    alignSelf: 'center',
   },
 });
 
