@@ -6,6 +6,7 @@ import { Image, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Accueil from './src/screens/Accueil';
 import MapScreen from './src/screens/MapScreen';
 import Details from './src/screens/Details';
+import AboutUs from './src/screens/AboutUs';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,7 @@ const App = ({ props }: PropsWithChildren<any>): JSX.Element => {
           <Stack.Screen name="Accueil" component={Accueil} />
           <Stack.Screen name="Map" component={MapScreen} />
           <Stack.Screen name="Details" component={Details} />
+          <Stack.Screen name="About us" component={AboutUs} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
@@ -91,6 +93,13 @@ function CustomNavigationBar({
                   closeMenu();
                 }}
                 title="Dockings"
+              />
+              <Menu.Item
+                onPress={() => {
+                  navigation.navigate('About us');
+                  closeMenu();
+                }}
+                title="About us"
               />
             </Menu>
           </View>
