@@ -1,60 +1,121 @@
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {PropsWithChildren, useEffect, useState} from 'react';
-import styles from '../components/styles';
-import api from '../services/ApiService';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { useState } from 'react';
+import Launches from '../components/Launches';
+import Events from '../components/Events';
+import Dockings from '../components/Dockings';
+import { Menu, Button, IconButton } from 'react-native-paper';
 
-const Stack = createNativeStackNavigator();
-const Accueil = ({navigation}: PropsWithChildren<any>): JSX.Element => {
-  const [events, setEvent] = useState([]);
-  useEffect(() => {
-    api.getEventList().then(response => {
-      console.log(response.data);
-      setEvent(response.data);
-    });
-  }, []);
+const Accueil = ({ route, navigation }: any): JSX.Element => {
+  const [search, setSearch] = useState('');
+  const [sortOption, setSortOption] = useState('dateDesc');
+  const type = route.params?.type || 'launches';
+  const [visible, setVisible] = useState(false);
+
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
+
+  const renderComponent = () => {
+    switch (type) {
+      case 'dockings':
+        return <Dockings navigation={navigation} search={search} sortOption={sortOption}/>;
+      case 'launches':
+        return <Launches navigation={navigation} search={search} sortOption={sortOption} />;
+      default:
+        return <Events navigation={navigation} search={search} sortOption={sortOption} />;
+    }
+  };
+
+  const getPageName = (type: string) => {
+    switch (type) {
+      case 'dockings':
+        return 'Dockings';
+      case 'launches':
+        return 'Launches';
+      default:
+        return 'Events';
+    }
+  };
 
   return (
-    <View style={styless.container}>
-      <Text style={styles.titre}>Accueil</Text>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Utilisateurs')}>
-        <Text style={styles.buttonText}>Voir la liste des utilisateurs</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Profil')}>
-        <Text style={styles.buttonText}>Voir votre profil</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={async () => await api.getEventList()}>
-        <Text style={styles.buttonText}>Call API fusées</Text>
-      </TouchableOpacity>
-
-      <FlatList
-        data={events}
-        keyExtractor={(event: any) => event.count}
-        renderItem={({item}: any) => (
-          <View>
-            <Text>{item}</Text>
-          </View>
-        )}
-      />
+    <View style={styles.container}>
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Rechercher des événements"
+          value={search}
+          onChangeText={setSearch}
+        />
+        <IconButton
+          icon="close"
+          size={20}
+          onPress={() => setSearch('')}
+          style={styles.clearButton}
+        />
+      </View>
+      <View style={styles.titre}>
+        <Text style={styles.pageName}>{getPageName(type)}</Text>
+        <Menu
+          style={styles.menuTri}
+          visible={visible}
+          onDismiss={closeMenu}
+          anchor={<Button icon="sort" onPress={openMenu} children={undefined}/>}>
+          <Menu.Item onPress={() => { setSortOption('nameAsc'); closeMenu(); }} title="Name Asc" />
+          <Menu.Item onPress={() => { setSortOption('nameDesc'); closeMenu(); }} title="Name Desc" />
+          <Menu.Item onPress={() => { setSortOption('dateAsc'); closeMenu(); }} title="Date Asc" />
+          <Menu.Item onPress={() => { setSortOption('dateDesc'); closeMenu(); }} title="Date Desc" />
+        </Menu>
+      </View>
+      <View style={styles.cardContainer}>
+        {renderComponent()}
+      </View>
     </View>
   );
 };
 
-const styless = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    marginBottom: 100,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '90%',
+  },
+  searchBar: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    margin: 10,
+    paddingLeft: 10,
+    flex: 1,
+  },
+  clearButton: {
+    marginRight: 10,
+    position: 'absolute',
+    marginLeft: '85%',
+  },
+  cardContainer: {
+    padding: 10,
+    width: '100%',
+    height: '100%',
+  },
+  pageName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  menuTri: {
+    alignSelf: 'flex-end',
+  },
+  titre: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '90%',
+    alignContent: 'center',
+    alignItems: 'center',
   },
 });
 

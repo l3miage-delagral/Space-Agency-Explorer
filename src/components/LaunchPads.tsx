@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Image, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
-import MapboxGL from '@rnmapbox/maps';
+import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { Pad } from '../models/types';
 import ApiService from '../services/ApiService';
 
-// Set your Mapbox access token
-MapboxGL.setAccessToken('sk.eyJ1IjoiYWxsZWt6eCIsImEiOiJjbHc3bjQ2OHoxaTBhMnRyejBydnV1NnNxIn0.lrAAByp5lJSk_PdIYYleEQ');
-
 interface LaunchPadsProps {
-  onSelectPad: (pad: Pad) => void;
-  onDeselectPad: () => void;
+  onPadsLoaded: (pads: Pad[]) => void;
 }
 
-const LaunchPads: React.FC<LaunchPadsProps> = ({ onSelectPad, onDeselectPad }) => {
-  const [pads, setPads] = useState<Pad[]>([]);
+const LaunchPads: React.FC<LaunchPadsProps> = ({ onPadsLoaded }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +15,7 @@ const LaunchPads: React.FC<LaunchPadsProps> = ({ onSelectPad, onDeselectPad }) =
       try {
         const padsData = await ApiService.getLaunchPads();
         if (Array.isArray(padsData)) {
-          setPads(padsData);
+          onPadsLoaded(padsData);
         } else {
           console.error('Pads data is not an array:', padsData);
         }
@@ -33,7 +27,7 @@ const LaunchPads: React.FC<LaunchPadsProps> = ({ onSelectPad, onDeselectPad }) =
     };
 
     fetchPads();
-  }, []);
+  }, [onPadsLoaded]);
 
   if (isLoading) {
     return (
@@ -43,41 +37,10 @@ const LaunchPads: React.FC<LaunchPadsProps> = ({ onSelectPad, onDeselectPad }) =
     );
   }
 
-  return (
-    <MapboxGL.MapView style={{ flex: 1 }} onPress={onDeselectPad}>
-      {pads.map(pad => (
-        <MapboxGL.MarkerView
-          key={pad.id.toString()}
-          coordinate={[pad.longitude, pad.latitude]}
-        >
-          <TouchableOpacity onPress={() => onSelectPad(pad)}>
-            <View style={styles.markerContainer}>
-              <Image
-                source={require('../assets/marker.png')}
-                style={styles.annotationImage}
-              />
-              <Text style={styles.markerText}>{pad.name}</Text>
-            </View>
-          </TouchableOpacity>
-        </MapboxGL.MarkerView>
-      ))}
-    </MapboxGL.MapView>
-  );
+  return null;
 };
 
 const styles = StyleSheet.create({
-  markerContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  annotationImage: {
-    width: 50,
-    height: 50,
-  },
-  markerText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
