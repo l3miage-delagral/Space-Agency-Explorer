@@ -1,3 +1,12 @@
+# Welcome to the Space Agency Explorer app!
+
+This app is a project made by a team of 2 students from the University of
+Grenoble Alpes in France. We are part of the 2023-2024
+promotion of M1 MIAGE. The goal of this project
+was to create an app that allows users to explore data from the Space Devs
+API. We hope you enjoy using our app!
+
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
