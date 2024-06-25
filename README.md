@@ -6,6 +6,24 @@ promotion of M1 MIAGE. The goal of this project
 was to create an app that allows users to explore data from the Space Devs
 API. We hope you enjoy using our app!
 
+## Features
+
+- **View upcoming launches**: Users can view upcoming launches and add them to their calendar.
+- **View past launches**: Users can view past launches.
+- **View space agencies**: Users can view space agencies.
+- **View missions**: Users can view missions.
+- **View rockets**: Users can view rockets.
+- **View ongoing launches**: Users can view ongoing launches.
+- **View launchpads**: Users can view launchpads on map.
+
+## Technologies
+
+- **React Native**: We used React Native to create the app.
+- **TypeScript**: We used TypeScript to write the code.
+- **Space Devs API**: We used the Space Devs API to get data for the app.
+![Space Devs API](https://thespacedevs.com/)
+
+
 ![Logo space agency explorer](./src/assets/logo.png)
 
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
